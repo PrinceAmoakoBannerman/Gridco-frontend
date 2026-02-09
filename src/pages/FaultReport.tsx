@@ -23,7 +23,6 @@ export default function FaultReport() {
   const [assigningId, setAssigningId] = useState<number | null>(null);
   const [feedbacks, setFeedbacks] = useState<{[key: number]: any[]}>({});
   const [feedbackForm, setFeedbackForm] = useState<{[key: number]: {name: string; email: string; text: string}}>({});
-  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('access_token'));
 
   // Check auth status and refresh token if needed on mount
   React.useEffect(() => {
@@ -42,19 +41,14 @@ export default function FaultReport() {
           if (res.ok) {
             const json = await res.json();
             localStorage.setItem('access_token', json.access);
-            setIsAuthenticated(true);
           } else {
             // Refresh failed, clear tokens
             localStorage.removeItem('access_token');
             localStorage.removeItem('refresh_token');
-            setIsAuthenticated(false);
           }
         } catch (e) {
           console.error('Token refresh failed:', e);
-          setIsAuthenticated(false);
         }
-      } else if (token) {
-        setIsAuthenticated(true);
       }
     };
     
@@ -73,7 +67,6 @@ export default function FaultReport() {
     if (!token) {
       const refreshToken = localStorage.getItem('refresh_token');
       if (!refreshToken) {
-        setIsAuthenticated(false);
         return null;
       }
       
@@ -87,17 +80,14 @@ export default function FaultReport() {
         if (res.ok) {
           const json = await res.json();
           localStorage.setItem('access_token', json.access);
-          setIsAuthenticated(true);
           return json.access;
         } else {
           localStorage.removeItem('access_token');
           localStorage.removeItem('refresh_token');
-          setIsAuthenticated(false);
           setError('Session expired. Please sign in again.');
           return null;
         }
       } catch (e) {
-        setIsAuthenticated(false);
         return null;
       }
     }
@@ -129,7 +119,6 @@ export default function FaultReport() {
         if (res.status === 401 || res.status === 403) {
           localStorage.removeItem('access_token');
           localStorage.removeItem('refresh_token');
-          setIsAuthenticated(false);
           throw new Error('Session expired. Please sign in again.');
         }
         throw new Error(err?.error || `${res.status} ${res.statusText}`);
@@ -157,7 +146,6 @@ export default function FaultReport() {
         if (res.status === 401 || res.status === 403) {
           localStorage.removeItem('access_token');
           localStorage.removeItem('refresh_token');
-          setIsAuthenticated(false);
           setError('Not authorized — please sign in');
         }
         setFaults([]);
@@ -224,7 +212,6 @@ export default function FaultReport() {
         if (res.status === 401 || res.status === 403) {
           localStorage.removeItem('access_token');
           localStorage.removeItem('refresh_token');
-          setIsAuthenticated(false);
           setError('Session expired. Please sign in again.');
         } else {
           setError(`Feedback submission failed: ${errData.error || res.statusText}`);
@@ -266,7 +253,6 @@ export default function FaultReport() {
         if (res.status === 401 || res.status === 403) {
           localStorage.removeItem('access_token');
           localStorage.removeItem('refresh_token');
-          setIsAuthenticated(false);
           setError('Session expired. Please sign in again.');
         } else if (errData.error) {
           setError(`Assignment failed: ${errData.error}`);
@@ -323,7 +309,6 @@ export default function FaultReport() {
         if (res.status === 401 || res.status === 403) {
           localStorage.removeItem('access_token');
           localStorage.removeItem('refresh_token');
-          setIsAuthenticated(false);
           setError('Session expired. Please sign in again.');
         }
         // revert on error
