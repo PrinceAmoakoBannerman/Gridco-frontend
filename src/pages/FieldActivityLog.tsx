@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { API_BASE_URL } from '../config';
 
 type FormState = {
   staff: string;
@@ -35,7 +36,7 @@ export default function FieldActivityLog(): JSX.Element {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     // submit to backend
-    fetch('/api/field-activities/', {
+    fetch(`${API_BASE_URL}/field-activities/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

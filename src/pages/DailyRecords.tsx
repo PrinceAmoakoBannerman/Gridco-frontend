@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../config';
 
 export default function DailyRecords(): JSX.Element {
   const [date, setDate] = useState<string>(() => new Date().toISOString().slice(0, 10));
@@ -14,7 +15,7 @@ export default function DailyRecords(): JSX.Element {
       const token = localStorage.getItem('access_token');
       const headers: any = { 'Content-Type': 'application/json' };
       if (token) headers.Authorization = `Bearer ${token}`;
-      const res = await fetch(`/api/daily-records/?date=${date}`, { headers });
+      const res = await fetch(`${API_BASE_URL}/daily-records/?date=${date}`, { headers });
       if (!res.ok) {
         if (res.status === 401 || res.status === 403) setError('Authentication required. Sign in first.');
         else setError(`Failed to fetch: ${res.status}`);
@@ -36,7 +37,7 @@ export default function DailyRecords(): JSX.Element {
       const token = localStorage.getItem('access_token');
       if (!token) return;
       try {
-        const res = await fetch('/api/auth/user/', { headers: { Authorization: `Bearer ${token}` } });
+        const res = await fetch(`${API_BASE_URL}/auth/user/`, { headers: { Authorization: `Bearer ${token}` } });
         if (!res.ok) return;
         const j = await res.json();
         // no longer require admin for export; we keep this for UI cues only
@@ -53,7 +54,7 @@ export default function DailyRecords(): JSX.Element {
       const token = localStorage.getItem('access_token');
       const headers: any = {};
       if (token) headers.Authorization = `Bearer ${token}`;
-      const res = await fetch(`/api/export/daily-records/csv/?date=${date}`, { headers });
+      const res = await fetch(`${API_BASE_URL}/export/daily-records/csv/?date=${date}`, { headers });
       if (!res.ok) {
         if (res.status === 403) setError('Export denied: admin access required');
         else setError('Failed to export CSV');

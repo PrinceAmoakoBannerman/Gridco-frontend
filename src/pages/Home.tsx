@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import fallbackLogo from '../assets/gridco-logo.svg';
+import { API_BASE_URL } from '../config';
 
 type DashboardSummary = {
   total_staff_online_today: number;
@@ -38,7 +39,7 @@ export default function Home(): JSX.Element {
         const token = localStorage.getItem('access_token');
         const headers: any = { 'Content-Type': 'application/json' };
         if (token) headers.Authorization = `Bearer ${token}`;
-        const res = await fetch('/api/dashboard/', { headers });
+        const res = await fetch(`${API_BASE_URL}/dashboard/`, { headers });
         const text = await res.text();
         const json = text ? JSON.parse(text) : null;
         setSummary(json);
@@ -61,7 +62,7 @@ export default function Home(): JSX.Element {
     
     (async () => {
       try {
-        const res = await fetch('/api/auth/token/', {
+        const res = await fetch(`${API_BASE_URL}/auth/token/`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ username: email, password }),
@@ -83,7 +84,7 @@ export default function Home(): JSX.Element {
         if (refresh) localStorage.setItem('refresh_token', refresh);
 
         // fetch current user to verify account is active/authorized
-        const userRes = await fetch('/api/auth/user/', {
+        const userRes = await fetch(`${API_BASE_URL}/auth/user/`, {
           headers: { Authorization: `Bearer ${access}` },
         });
         if (!userRes.ok) {
@@ -127,7 +128,7 @@ export default function Home(): JSX.Element {
         return;
       }
       try {
-        const res = await fetch('/api/auth/user/', { headers: { Authorization: `Bearer ${token}` } });
+        const res = await fetch(`${API_BASE_URL}/auth/user/`, { headers: { Authorization: `Bearer ${token}` } });
         if (!res.ok) {
           signOut();
           setAuthChecking(false);
@@ -218,7 +219,7 @@ export default function Home(): JSX.Element {
                         const supplied = prompt('Enter your email to recover Staff ID');
                         if (!supplied) return;
                         try {
-                          const res = await fetch('/api/auth/lookup/', {
+                          const res = await fetch(`${API_BASE_URL}/auth/lookup/`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ email: supplied }),
@@ -264,7 +265,7 @@ export default function Home(): JSX.Element {
                         if (!uname || !mail || !signupPassword) { setSignupMessage('Fill all fields'); return; }
                         if (signupPassword !== signupConfirm) { setSignupMessage('Passwords do not match'); return; }
                         try {
-                          const res = await fetch('/api/auth/set-password/', {
+                          const res = await fetch(`${API_BASE_URL}/auth/set-password/`, {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ username: uname, email: mail.toLowerCase(), password: signupPassword }),
@@ -272,7 +273,7 @@ export default function Home(): JSX.Element {
                           if (res.status === 201) {
                             // Password created — attempt to sign in automatically
                             try {
-                              const tokenRes = await fetch('/api/auth/token/', {
+                              const tokenRes = await fetch(`${API_BASE_URL}/auth/token/`, {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
                                 body: JSON.stringify({ username: uname, password: signupPassword }),
@@ -283,7 +284,7 @@ export default function Home(): JSX.Element {
                                 const refresh = tjson.refresh;
                                 localStorage.setItem('access_token', access);
                                 if (refresh) localStorage.setItem('refresh_token', refresh);
-                                const userRes = await fetch('/api/auth/user/', { headers: { Authorization: `Bearer ${access}` } });
+                                const userRes = await fetch(`${API_BASE_URL}/auth/user/`, { headers: { Authorization: `Bearer ${access}` } });
                                 if (userRes.ok) {
                                   const userJson = await userRes.json();
                                   setUser(userJson.username);

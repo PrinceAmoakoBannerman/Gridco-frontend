@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { API_BASE_URL } from '../config';
 
 type Entry = {
   id: number;
@@ -11,7 +12,7 @@ type Entry = {
   supervisor: string;
 };
 
-const API = '/api/server-room/';
+const API = `${API_BASE_URL}/server-room/`;
 
 export default function ServerRoomRecord() {
   const [items, setItems] = useState<Entry[] | null>(null);

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { API_BASE_URL } from '../config';
 
 type DashboardData = {
   total_staff_online_today: number;
@@ -26,7 +27,7 @@ export default function AdminDashboard(): JSX.Element {
         const token = localStorage.getItem('access_token');
         const headers: any = {};
         if (token) headers.Authorization = `Bearer ${token}`;
-        const res = await fetch('/api/dashboard/', { headers });
+        const res = await fetch(`${API_BASE_URL}/dashboard/`, { headers });
         const text = await res.text();
 
         if (!res.ok) {
@@ -87,7 +88,7 @@ export default function AdminDashboard(): JSX.Element {
         // no token: revert optimistic update and inform user
         setError('Not signed in — please sign in to mark faults resolved.');
         // reload latest dashboard to revert optimistic update
-        const r = await fetch('/api/dashboard/');
+        const r = await fetch(`${API_BASE_URL}/dashboard/`);
         const txt = await r.text();
         const json = txt ? JSON.parse(txt) : null;
         setData(json);
@@ -98,7 +99,7 @@ export default function AdminDashboard(): JSX.Element {
       const token = localStorage.getItem('access_token');
       const headers: any = { 'Content-Type': 'application/json' };
       if (token) headers.Authorization = `Bearer ${token}`;
-      const res = await fetch(`/api/faults/${faultId}/`, {
+      const res = await fetch(`${API_BASE_URL}/faults/${faultId}/`, {
         method: 'PATCH',
         headers,
         body: JSON.stringify({ status: 'resolved' }),
@@ -120,7 +121,7 @@ export default function AdminDashboard(): JSX.Element {
         const token = localStorage.getItem('access_token');
         const headers: any = {};
         if (token) headers.Authorization = `Bearer ${token}`;
-        const r = await fetch('/api/dashboard/', { headers });
+        const r = await fetch(`${API_BASE_URL}/dashboard/`, { headers });
         const txt = await r.text();
         const json = txt ? JSON.parse(txt) : null;
         setData(json);

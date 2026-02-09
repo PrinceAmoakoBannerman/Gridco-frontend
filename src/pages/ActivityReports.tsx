@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { API_BASE_URL } from '../config';
 
 type Report = {
   id: number;
@@ -21,7 +22,7 @@ export default function ActivityReports() {
   useEffect(() => {
     const fetchReports = async () => {
       try {
-        const res = await fetch('/api/activity-reports/');
+        const res = await fetch(`${API_BASE_URL}/activity-reports/`);
         if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
         let data = null;
         try {
@@ -46,7 +47,7 @@ export default function ActivityReports() {
       const params = new URLSearchParams();
       if (start) params.set('start', start);
       if (end) params.set('end', end);
-      const res = await fetch(`/api/export/activity-reports/weekly/?${params.toString()}`);
+      const res = await fetch(`${API_BASE_URL}/export/activity-reports/weekly/?${params.toString()}`);
       if (!res.ok) { setError('Failed to export weekly CSV'); return; }
       const blob = await res.blob();
       const url = window.URL.createObjectURL(blob);
@@ -73,7 +74,7 @@ export default function ActivityReports() {
         m = `${d.getFullYear()}-${mm}`;
       }
       params.set('month', m);
-      const res = await fetch(`/api/export/activity-reports/monthly/?${params.toString()}`);
+      const res = await fetch(`${API_BASE_URL}/export/activity-reports/monthly/?${params.toString()}`);
       if (!res.ok) { setError('Failed to export monthly CSV'); return; }
       const blob = await res.blob();
       const url = window.URL.createObjectURL(blob);

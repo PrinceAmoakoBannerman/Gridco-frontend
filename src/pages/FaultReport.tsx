@@ -95,7 +95,7 @@ export default function FaultReport() {
     const prev = faults.slice();
     setFaults((p) => p.map(f => f.id === id ? { ...f, status: newStatus } : f));
     try {
-      const res = await fetch(`/api/faults/${id}/`, { method: 'PATCH', headers, body: JSON.stringify({ status: newStatus }) });
+      const res = await fetch(`${API_BASE_URL}/faults/${id}/`, { method: 'PATCH', headers, body: JSON.stringify({ status: newStatus }) });
       if (!res.ok) {
         if (res.status === 401 || res.status === 403) {
           localStorage.removeItem('access_token');
