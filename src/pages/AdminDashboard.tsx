@@ -19,7 +19,10 @@ type DashboardData = {
 export default function AdminDashboard(): JSX.Element {
   const [data, setData] = useState<DashboardData | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [fixing, setFixing] = useState<number | null>(null);
+  const [assigningId, setAssigningId] = useState<number | null>(null);
+  const [faults, setFaults] = useState<any[]>([]);
 
   useEffect(() => {
     const load = async () => {
@@ -49,7 +52,82 @@ export default function AdminDashboard(): JSX.Element {
       }
     };
     load();
+    loadFaults();
   }, []);
+
+  const loadFaults = async () => {
+    try {
+      const token = localStorage.getItem('access_token');
+      const headers: any = {};
+      if (token) headers.Authorization = `Bearer ${token}`;
+      const res = await fetch(`${API_BASE_URL}/fault-reports/`, { headers });
+      if (!res.ok) return;
+      const json = await res.json();
+      setFaults(json);
+    } catch (e) {
+      console.error('Failed to load faults:', e);
+    }
+  };
+
+  const assignFault = async (faultId: number, assignedToId: string | number | null) => {
+    const token = localStorage.getItem('access_token');
+    if (!token) {
+      setError('You must sign in to assign faults');
+      return;
+    }
+    const headers: any = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
+    setAssigningId(faultId);
+    setError(null);
+    setSuccess(null);
+    try {
+      const res = await fetch(`${API_BASE_URL}/faults/${faultId}/`, { 
+        method: 'PATCH', 
+        headers, 
+        body: JSON.stringify({ assigned_to: assignedToId }) 
+      });
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        if (res.status === 401 || res.status === 403) {
+          localStorage.removeItem('access_token');
+          localStorage.removeItem('refresh_token');
+          setError('Not authorized — please sign in');
+        } else if (errData.error) {
+          setError(`Assignment failed: ${errData.error}`);
+        } else {
+          setError(`Assignment failed (${res.status})`);
+        }
+        setAssigningId(null);
+        return;
+      }
+      
+      // Successful assignment - update local state immediately
+      setFaults(prev => prev.map(f => {
+        if (f.id === faultId) {
+          return {
+            ...f,
+            assigned_to: typeof assignedToId === 'string' ? assignedToId : assignedToId,
+            assigned_to_id: assignedToId
+          };
+        }
+        return f;
+      }));
+      
+      const currentFault = faults.find(f => f.id === faultId);
+      if (assignedToId) {
+        setSuccess(`Fault "${currentFault?.title || 'Unknown'}" assigned to "${assignedToId}"`);
+      } else {
+        setSuccess(`Fault "${currentFault?.title || 'Unknown'}" unassigned`);
+      }
+      
+      // Reload faults in background to ensure sync with backend
+      await loadFaults();
+    } catch (e: any) {
+      setError(`Assignment error: ${e.message || 'Failed to assign fault'}`);
+      console.error('Assignment error:', e);
+    } finally {
+      setAssigningId(null);
+    }
+  };
 
   if (!data) {
     return (
@@ -139,6 +217,9 @@ export default function AdminDashboard(): JSX.Element {
       <h1 className="text-2xl font-semibold">Admin Dashboard</h1>
       {error && (
         <div className="mt-3 p-3 bg-red-50 border border-red-200 text-red-700 rounded">{error}</div>
+      )}
+      {success && (
+        <div className="mt-3 p-3 bg-green-50 border border-green-200 text-green-700 rounded">{success}</div>
       )}
 
       <div className="mt-4 grid grid-cols-1 md:grid-cols-4 gap-4">
@@ -239,37 +320,56 @@ export default function AdminDashboard(): JSX.Element {
         </div>
 
         <div className="bg-white p-4 rounded shadow">
-          <div className="text-sm text-gray-600">Active faults</div>
+          <div className="text-sm text-gray-600">All Faults</div>
           <div className="mt-2">
-            <div className="text-2xl font-bold">{(active_faults_list?.length ?? data.active_faults)}</div>
-            <ul className="mt-3 max-h-48 overflow-auto">
-              {active_faults_list && active_faults_list.length > 0 ? (
-                active_faults_list.map((f) => (
-                  <li key={f.id} className="py-2 flex justify-between items-start border-b last:border-b-0">
-                    <div>
-                      <div className="font-medium">{f.title}</div>
-                      <div className="text-xs text-gray-500">{f.substation || '—'}</div>
+            <ul className="mt-3 max-h-96 overflow-auto space-y-2">
+              {faults.length === 0 ? (
+                <li className="text-sm text-gray-500">No faults</li>
+              ) : (
+                faults.map((f) => (
+                  <li key={f.id} className="py-2 px-2 border rounded bg-gray-50">
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <div className="font-medium text-sm">{f.title}</div>
+                        <div className="text-xs text-gray-600">{f.location} • Status: {f.status}</div>
+                        <div className="text-xs text-gray-700 mt-1">
+                          Assigned to: <span className="font-medium">{f.assigned_to || <span className="text-gray-500 italic">Unassigned</span>}</span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="text-sm flex items-center gap-2">
-                      {f.is_fixed ? (
-                        <span className="text-green-600">Fixed</span>
-                      ) : (
-                        <>
-                          <span className="text-red-600">Unfixed</span>
-                          <button
-                            onClick={() => handleMarkFixed(f.id)}
-                            disabled={fixing === f.id}
-                            className="ml-2 px-2 py-1 bg-blue-600 text-white text-xs rounded"
-                          >
-                            {fixing === f.id ? 'Fixing…' : 'Mark fixed'}
-                          </button>
-                        </>
-                      )}
+                    <div className="mt-2 flex gap-2 items-center">
+                      <input 
+                        type="text" 
+                        placeholder="Staff name or ID" 
+                        id={`assign-${f.id}`}
+                        className="border px-2 py-1 text-xs flex-1"
+                      />
+                      <button 
+                        onClick={() => {
+                          const input = document.getElementById(`assign-${f.id}`) as HTMLInputElement;
+                          const inputVal = input.value.trim();
+                          if (!inputVal) {
+                            setError('Please enter a staff name or ID');
+                            return;
+                          }
+                          assignFault(f.id, inputVal);
+                          input.value = '';
+                        }}
+                        disabled={assigningId === f.id}
+                        className="px-2 py-1 bg-green-600 text-white text-xs rounded hover:bg-green-700 disabled:bg-gray-400"
+                      >
+                        {assigningId === f.id ? 'Assigning...' : 'Assign'}
+                      </button>
+                      <button 
+                        onClick={() => assignFault(f.id, null)}
+                        disabled={assigningId === f.id}
+                        className="px-2 py-1 bg-gray-400 text-white text-xs rounded hover:bg-gray-500 disabled:bg-gray-300"
+                      >
+                        Clear
+                      </button>
                     </div>
                   </li>
                 ))
-              ) : (
-                <li className="text-sm text-gray-500">No active faults details available.</li>
               )}
             </ul>
           </div>

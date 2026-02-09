@@ -6,7 +6,6 @@ export default function DailyRecords(): JSX.Element {
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<any | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
 
   async function fetchRecords() {
     setLoading(true);
@@ -39,9 +38,7 @@ export default function DailyRecords(): JSX.Element {
       try {
         const res = await fetch(`${API_BASE_URL}/auth/user/`, { headers: { Authorization: `Bearer ${token}` } });
         if (!res.ok) return;
-        const j = await res.json();
-        // no longer require admin for export; we keep this for UI cues only
-        setIsAdmin(!!j.is_staff || !!j.is_superuser);
+        // user info fetched but not needed for current functionality
       } catch (_) {
         // ignore
       }
