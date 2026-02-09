@@ -23,6 +23,7 @@ export default function FaultReport() {
   const [assigningId, setAssigningId] = useState<number | null>(null);
   const [feedbacks, setFeedbacks] = useState<{[key: number]: any[]}>({});
   const [feedbackForm, setFeedbackForm] = useState<{[key: number]: {name: string; email: string; text: string}}>({});
+  const [loadedFeedbacks, setLoadedFeedbacks] = useState<Set<number>>(new Set());
 
   // Check auth status and refresh token if needed on mount
   React.useEffect(() => {
@@ -164,13 +165,15 @@ export default function FaultReport() {
 
   React.useEffect(() => {
     faults.forEach(f => {
-      if (f.status && f.status.toLowerCase() === 'resolved') {
+      if (f.status && f.status.toLowerCase() === 'resolved' && !loadedFeedbacks.has(f.id)) {
         loadFeedbacks(f.id);
       }
     });
-  }, [faults]);
+  }, [faults, loadedFeedbacks]);
 
   const loadFeedbacks = async (faultId: number) => {
+    // Mark as loaded immediately to prevent duplicate requests
+    setLoadedFeedbacks((prev: Set<number>) => new Set(prev).add(faultId));
     try {
       const token = await getValidToken();
       const headers: any = {};
