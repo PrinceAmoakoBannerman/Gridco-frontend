@@ -21,6 +21,8 @@ export default function FaultReport() {
   const [faults, setFaults] = useState<any[]>([]);
   const [loadingFaults, setLoadingFaults] = useState(true);
   const [assigningId, setAssigningId] = useState<number | null>(null);
+  const [feedbacks, setFeedbacks] = useState<{[key: number]: any[]}>({});
+  const [feedbackForm, setFeedbackForm] = useState<{[key: number]: {name: string; email: string; text: string}}>({});
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -84,6 +86,69 @@ export default function FaultReport() {
   };
 
   React.useEffect(() => { loadFaults(); }, []);
+
+  React.useEffect(() => {
+    faults.forEach(f => {
+      if (f.status && f.status.toLowerCase() === 'resolved') {
+        loadFeedbacks(f.id);
+      }
+    });
+  }, [faults]);
+
+  const loadFeedbacks = async (faultId: number) => {
+    try {
+      const token = localStorage.getItem('access_token');
+      const headers: any = {};
+      if (token) headers.Authorization = `Bearer ${token}`;
+      const res = await fetch(`${API_BASE_URL}/fault-feedbacks/${faultId}/`, { headers });
+      if (!res.ok) return;
+      const json = await res.json();
+      setFeedbacks(prev => ({ ...prev, [faultId]: json }));
+    } catch (e) {
+      console.error('Failed to load feedbacks:', e);
+    }
+  };
+
+  const submitFeedback = async (faultId: number) => {
+    const form = feedbackForm[faultId];
+    if (!form || !form.name.trim() || !form.email.trim() || !form.text.trim()) {
+      setError('Please fill in all feedback fields');
+      return;
+    }
+
+    const token = localStorage.getItem('access_token');
+    const headers: any = { 'Content-Type': 'application/json' };
+    if (token) headers.Authorization = `Bearer ${token}`;
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/fault-feedbacks/`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          fault_id: faultId,
+          staff_name: form.name.trim(),
+          staff_email: form.email.trim(),
+          feedback_text: form.text.trim()
+        })
+      });
+
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        setError(`Feedback submission failed: ${errData.error || res.statusText}`);
+        return;
+      }
+
+      setSuccess('Feedback submitted successfully!');
+      // Clear form and reload feedbacks
+      setFeedbackForm(prev => ({ 
+        ...prev, 
+        [faultId]: { name: '', email: '', text: '' }
+      }));
+      await loadFeedbacks(faultId);
+    } catch (e: any) {
+      setError(`Error submitting feedback: ${e.message}`);
+    }
+  };
 
   const assignFault = async (faultId: number, assignedToId: string | number | null) => {
     const token = localStorage.getItem('access_token');
@@ -281,6 +346,65 @@ export default function FaultReport() {
                         </button>
                       </div>
                     </div>
+
+                    {f.status && f.status.toLowerCase() === 'resolved' && (
+                      <div className="mt-4 pt-4 border-t">
+                        <h4 className="text-sm font-medium mb-3">Feedback for this resolved fault:</h4>
+                        
+                        {/* Existing feedbacks */}
+                        {feedbacks[f.id] && feedbacks[f.id].length > 0 && (
+                          <div className="mb-4 space-y-2 bg-blue-50 p-3 rounded">
+                            <div className="text-xs font-semibold text-blue-900">Received Feedback:</div>
+                            {feedbacks[f.id].map((fb: any, idx: number) => (
+                              <div key={idx} className="text-xs border-l-2 border-blue-300 pl-2">
+                                <div className="font-medium">{fb.staff_name} ({fb.staff_email})</div>
+                                <div className="text-gray-700 mt-1">{fb.feedback_text}</div>
+                                <div className="text-gray-500 text-xs mt-1">{new Date(fb.date_submitted).toLocaleString()}</div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Feedback submission form */}
+                        <div className="space-y-2">
+                          <input
+                            type="text"
+                            placeholder="Your name"
+                            value={feedbackForm[f.id]?.name || ''}
+                            onChange={(e) => setFeedbackForm(prev => ({
+                              ...prev,
+                              [f.id]: { ...prev[f.id] || { name: '', email: '', text: '' }, name: e.target.value }
+                            }))}
+                            className="w-full border px-2 py-1 text-xs rounded"
+                          />
+                          <input
+                            type="email"
+                            placeholder="Your email"
+                            value={feedbackForm[f.id]?.email || ''}
+                            onChange={(e) => setFeedbackForm(prev => ({
+                              ...prev,
+                              [f.id]: { ...prev[f.id] || { name: '', email: '', text: '' }, email: e.target.value }
+                            }))}
+                            className="w-full border px-2 py-1 text-xs rounded"
+                          />
+                          <textarea
+                            placeholder="Your feedback..."
+                            value={feedbackForm[f.id]?.text || ''}
+                            onChange={(e) => setFeedbackForm(prev => ({
+                              ...prev,
+                              [f.id]: { ...prev[f.id] || { name: '', email: '', text: '' }, text: e.target.value }
+                            }))}
+                            className="w-full border px-2 py-1 text-xs rounded min-h-[60px]"
+                          />
+                          <button
+                            onClick={() => submitFeedback(f.id)}
+                            className="w-full px-3 py-2 bg-purple-600 text-white rounded text-xs hover:bg-purple-700"
+                          >
+                            Submit Feedback
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </li>
               ))}
