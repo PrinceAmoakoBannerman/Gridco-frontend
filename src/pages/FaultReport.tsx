@@ -303,6 +303,14 @@ export default function FaultReport() {
                           )
                         }
                       </div>
+                      {f.attachment_url && (
+                        <div className="text-xs text-gray-700 mt-2">
+                          <span className="font-medium">Attachment:</span> {' '}
+                          <a href={f.attachment_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                            View / Download
+                          </a>
+                        </div>
+                      )}
                     </div>
                     <div className="flex sm:flex-col items-center sm:items-end gap-2 sm:gap-0">
                       <div className="text-xs sm:text-sm flex-1 sm:flex-none sm:mb-2">Status: {f.status}</div>
