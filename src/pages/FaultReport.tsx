@@ -174,59 +174,59 @@ export default function FaultReport() {
   };
 
   return (
-    <div>
-      <h1 className="text-2xl font-semibold mb-4">Fault / Incident Report</h1>
+    <div className="p-3 sm:p-6">
+      <h1 className="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4">Fault / Incident Report</h1>
 
-      <form onSubmit={handleSubmit} className="bg-white p-4 rounded shadow max-w-2xl space-y-3">
-        <input name="title" value={form.title} onChange={handleChange} placeholder="Fault title" className="w-full border px-2 py-1" required />
-        <textarea name="description" value={form.description} onChange={handleChange} placeholder="Description" className="w-full border px-2 py-1" required />
-        <div className="flex gap-2">
-          <input name="date_reported" value={form.date_reported} onChange={handleChange} type="date" className="border px-2 py-1" required />
-          <input name="reported_by" value={form.reported_by} onChange={handleChange} placeholder="Reported by" className="border px-2 py-1 flex-1" required />
+      <form onSubmit={handleSubmit} className="bg-white p-3 sm:p-4 rounded shadow max-w-2xl space-y-3">
+        <input name="title" value={form.title} onChange={handleChange} placeholder="Fault title" className="w-full border px-2 py-2 text-sm sm:text-base rounded" required />
+        <textarea name="description" value={form.description} onChange={handleChange} placeholder="Description" className="w-full border px-2 py-2 text-sm sm:text-base rounded min-h-[80px]" required />
+        <div className="flex flex-col sm:flex-row gap-2">
+          <input name="date_reported" value={form.date_reported} onChange={handleChange} type="date" className="border px-2 py-2 text-sm sm:text-base rounded w-full sm:w-auto" required />
+          <input name="reported_by" value={form.reported_by} onChange={handleChange} placeholder="Reported by" className="border px-2 py-2 text-sm sm:text-base rounded flex-1" required />
         </div>
 
-        <div className="flex gap-2">
-          <input name="location" value={form.location} onChange={handleChange} placeholder="Location (substation / office)" className="border px-2 py-1 flex-1" required />
-          <select name="severity" value={form.severity} onChange={handleChange} className="border px-2 py-1">
+        <div className="flex flex-col sm:flex-row gap-2">
+          <input name="location" value={form.location} onChange={handleChange} placeholder="Location (substation / office)" className="border px-2 py-2 text-sm sm:text-base rounded flex-1" required />
+          <select name="severity" value={form.severity} onChange={handleChange} className="border px-2 py-2 text-sm sm:text-base rounded">
             <option value="low">Low</option>
             <option value="medium">Medium</option>
             <option value="high">High</option>
             <option value="critical">Critical</option>
           </select>
-          <select name="status" value={form.status} onChange={handleChange} className="border px-2 py-1">
+          <select name="status" value={form.status} onChange={handleChange} className="border px-2 py-2 text-sm sm:text-base rounded">
             <option value="open">Open</option>
             <option value="in progress">In Progress</option>
             <option value="resolved">Resolved</option>
           </select>
         </div>
 
-        <textarea name="resolution_remarks" value={form.resolution_remarks} onChange={handleChange} placeholder="Resolution remarks (optional)" className="w-full border px-2 py-1" />
+        <textarea name="resolution_remarks" value={form.resolution_remarks} onChange={handleChange} placeholder="Resolution remarks (optional)" className="w-full border px-2 py-2 text-sm sm:text-base rounded min-h-[60px]" />
 
         <div>
-          <label className="block mb-1">Attach image/file</label>
-          <input type="file" onChange={handleFile} />
+          <label className="block mb-1 text-sm sm:text-base">Attach image/file</label>
+          <input type="file" onChange={handleFile} className="text-sm" />
         </div>
 
-        {error && <div className="text-red-600">{error}</div>}
-        {success && <div className="text-green-600">{success}</div>}
+        {error && <div className="text-red-600 text-sm">{error}</div>}
+        {success && <div className="text-green-600 text-sm">{success}</div>}
 
         <div>
-          <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded" disabled={submitting}>{submitting ? 'Submitting…' : 'Submit Report'}</button>
+          <button type="submit" className="w-full sm:w-auto bg-blue-600 text-white px-4 py-2 rounded text-sm sm:text-base" disabled={submitting}>{submitting ? 'Submitting…' : 'Submit Report'}</button>
         </div>
       </form>
 
-        <div className="mt-6">
-          <h2 className="text-xl font-semibold mb-2">Existing Faults</h2>
-          {loadingFaults ? <div>Loading faults…</div> : (
-            <ul className="space-y-2">
+        <div className="mt-4 sm:mt-6">
+          <h2 className="text-lg sm:text-xl font-semibold mb-2">Existing Faults</h2>
+          {loadingFaults ? <div className="text-sm">Loading faults…</div> : (
+            <ul className="space-y-3">
               {faults.length === 0 && <li className="text-sm text-gray-500">No fault reports</li>}
               {faults.map(f => (
-                <li key={f.id} className="p-3 border rounded">
-                  <div className="flex justify-between items-start">
+                <li key={f.id} className="p-3 border rounded bg-white shadow-sm">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
                     <div className="flex-1">
-                      <div className="font-medium">{f.title}</div>
-                      <div className="text-xs text-gray-500">{f.location} — reported by {f.reported_by || '—'}</div>
-                      <div className="text-sm mt-1">{f.description}</div>
+                      <div className="font-medium text-sm sm:text-base">{f.title}</div>
+                      <div className="text-xs text-gray-500 mt-1">{f.location} — reported by {f.reported_by || '—'}</div>
+                      <div className="text-xs sm:text-sm mt-2">{f.description}</div>
                       <div className="text-xs text-gray-700 mt-2">
                         <span className="font-medium">Assigned to:</span> {
                           f.assigned_to ? (
@@ -239,45 +239,47 @@ export default function FaultReport() {
                         }
                       </div>
                     </div>
-                    <div className="text-right ml-4">
-                      <div className="text-sm mb-2">Status: {f.status}</div>
-                      <button onClick={() => toggleFaultStatus(f.id, f.status)} className="px-2 py-1 bg-blue-600 text-white rounded text-sm">
+                    <div className="flex sm:flex-col items-center sm:items-end gap-2 sm:gap-0">
+                      <div className="text-xs sm:text-sm flex-1 sm:flex-none sm:mb-2">Status: {f.status}</div>
+                      <button onClick={() => toggleFaultStatus(f.id, f.status)} className="px-2 py-1 bg-blue-600 text-white rounded text-xs sm:text-sm whitespace-nowrap">
                         {f.status && f.status.toLowerCase() !== 'resolved' ? 'Mark resolved' : 'Reopen'}
                       </button>
                     </div>
                   </div>
-                  <div className="mt-3 pt-2 border-t">
-                    <label className="block text-xs font-medium mb-1">Assign to staff (name or ID):</label>
-                    <div className="flex gap-2">
+                  <div className="mt-3 pt-3 border-t">
+                    <label className="block text-xs font-medium mb-2">Assign to staff (name or ID):</label>
+                    <div className="flex flex-col sm:flex-row gap-2">
                       <input 
                         type="text" 
                         placeholder="Staff name or ID" 
                         id={`assign-input-${f.id}`}
-                        className="border px-2 py-1 flex-1 text-sm"
+                        className="border px-2 py-2 flex-1 text-sm rounded"
                       />
-                      <button 
-                        onClick={() => {
-                          const input = document.getElementById(`assign-input-${f.id}`) as HTMLInputElement;
-                          const inputVal = input.value.trim();
-                          if (!inputVal) {
-                            setError('Please enter a staff name or ID');
-                            return;
-                          }
-                          assignFault(f.id, inputVal);
-                          input.value = '';
-                        }}
-                        disabled={assigningId === f.id}
-                        className="px-3 py-1 bg-green-600 text-white rounded text-sm hover:bg-green-700 disabled:bg-gray-500"
-                      >
-                        {assigningId === f.id ? 'Assigning...' : 'Assign'}
-                      </button>
-                      <button 
-                        onClick={() => assignFault(f.id, null)}
-                        disabled={assigningId === f.id}
-                        className="px-3 py-1 bg-gray-500 text-white rounded text-sm hover:bg-gray-600 disabled:bg-gray-400"
-                      >
-                        Unassign
-                      </button>
+                      <div className="flex gap-2">
+                        <button 
+                          onClick={() => {
+                            const input = document.getElementById(`assign-input-${f.id}`) as HTMLInputElement;
+                            const inputVal = input.value.trim();
+                            if (!inputVal) {
+                              setError('Please enter a staff name or ID');
+                              return;
+                            }
+                            assignFault(f.id, inputVal);
+                            input.value = '';
+                          }}
+                          disabled={assigningId === f.id}
+                          className="px-3 py-2 bg-green-600 text-white rounded text-xs sm:text-sm hover:bg-green-700 disabled:bg-gray-500 flex-1 sm:flex-none"
+                        >
+                          {assigningId === f.id ? 'Assigning...' : 'Assign'}
+                        </button>
+                        <button 
+                          onClick={() => assignFault(f.id, null)}
+                          disabled={assigningId === f.id}
+                          className="px-3 py-2 bg-gray-500 text-white rounded text-xs sm:text-sm hover:bg-gray-600 disabled:bg-gray-400 flex-1 sm:flex-none"
+                        >
+                          Unassign
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </li>
