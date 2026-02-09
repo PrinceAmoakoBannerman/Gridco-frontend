@@ -23,10 +23,86 @@ export default function FaultReport() {
   const [assigningId, setAssigningId] = useState<number | null>(null);
   const [feedbacks, setFeedbacks] = useState<{[key: number]: any[]}>({});
   const [feedbackForm, setFeedbackForm] = useState<{[key: number]: {name: string; email: string; text: string}}>({});
+  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem('access_token'));
+
+  // Check auth status and refresh token if needed on mount
+  React.useEffect(() => {
+    const checkAndRefreshAuth = async () => {
+      const token = localStorage.getItem('access_token');
+      const refreshToken = localStorage.getItem('refresh_token');
+      
+      if (!token && refreshToken) {
+        // Try to refresh token
+        try {
+          const res = await fetch(`${API_BASE_URL}/auth/token/refresh/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ refresh: refreshToken }),
+          });
+          if (res.ok) {
+            const json = await res.json();
+            localStorage.setItem('access_token', json.access);
+            setIsAuthenticated(true);
+          } else {
+            // Refresh failed, clear tokens
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            setIsAuthenticated(false);
+          }
+        } catch (e) {
+          console.error('Token refresh failed:', e);
+          setIsAuthenticated(false);
+        }
+      } else if (token) {
+        setIsAuthenticated(true);
+      }
+    };
+    
+    checkAndRefreshAuth();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setForm((s) => ({ ...s, [name]: value }));
+  };
+
+  // Helper to get valid token, refresh if needed
+  const getValidToken = async (): Promise<string | null> => {
+    let token = localStorage.getItem('access_token');
+    
+    if (!token) {
+      const refreshToken = localStorage.getItem('refresh_token');
+      if (!refreshToken) {
+        setIsAuthenticated(false);
+        return null;
+      }
+      
+      // Try to refresh
+      try {
+        const res = await fetch(`${API_BASE_URL}/auth/token/refresh/`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ refresh: refreshToken }),
+        });
+        if (res.ok) {
+          const json = await res.json();
+          localStorage.setItem('access_token', json.access);
+          setIsAuthenticated(true);
+          return json.access;
+        } else {
+          localStorage.removeItem('access_token');
+          localStorage.removeItem('refresh_token');
+          setIsAuthenticated(false);
+          setError('Session expired. Please sign in again.');
+          return null;
+        }
+      } catch (e) {
+        setIsAuthenticated(false);
+        return null;
+      }
+    }
+    
+    return token;
   };
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,9 +119,19 @@ export default function FaultReport() {
       Object.entries(form).forEach(([k, v]) => fd.append(k, v as string));
       if (attachment) fd.append('attachment', attachment);
 
-      const res = await fetch(API, { method: 'POST', body: fd });
+      const token = await getValidToken();
+      const headers: any = {};
+      if (token) headers.Authorization = `Bearer ${token}`;
+
+      const res = await fetch(API, { method: 'POST', body: fd, headers });
       if (!res.ok) {
         const err = await res.json().catch(() => null);
+        if (res.status === 401 || res.status === 403) {
+          localStorage.removeItem('access_token');
+          localStorage.removeItem('refresh_token');
+          setIsAuthenticated(false);
+          throw new Error('Session expired. Please sign in again.');
+        }
         throw new Error(err?.error || `${res.status} ${res.statusText}`);
       }
       setSuccess('Report submitted');
@@ -63,7 +149,7 @@ export default function FaultReport() {
   const loadFaults = async () => {
     setLoadingFaults(true);
     try {
-      const token = localStorage.getItem('access_token');
+      const token = await getValidToken();
       const headers: any = {};
       if (token) headers.Authorization = `Bearer ${token}`;
       const res = await fetch(API, { headers });
@@ -71,6 +157,7 @@ export default function FaultReport() {
         if (res.status === 401 || res.status === 403) {
           localStorage.removeItem('access_token');
           localStorage.removeItem('refresh_token');
+          setIsAuthenticated(false);
           setError('Not authorized — please sign in');
         }
         setFaults([]);
@@ -97,7 +184,7 @@ export default function FaultReport() {
 
   const loadFeedbacks = async (faultId: number) => {
     try {
-      const token = localStorage.getItem('access_token');
+      const token = await getValidToken();
       const headers: any = {};
       if (token) headers.Authorization = `Bearer ${token}`;
       const res = await fetch(`${API_BASE_URL}/fault-feedbacks/${faultId}/`, { headers });
@@ -116,7 +203,7 @@ export default function FaultReport() {
       return;
     }
 
-    const token = localStorage.getItem('access_token');
+    const token = await getValidToken();
     const headers: any = { 'Content-Type': 'application/json' };
     if (token) headers.Authorization = `Bearer ${token}`;
 
@@ -134,7 +221,14 @@ export default function FaultReport() {
 
       if (!res.ok) {
         const errData = await res.json().catch(() => ({}));
-        setError(`Feedback submission failed: ${errData.error || res.statusText}`);
+        if (res.status === 401 || res.status === 403) {
+          localStorage.removeItem('access_token');
+          localStorage.removeItem('refresh_token');
+          setIsAuthenticated(false);
+          setError('Session expired. Please sign in again.');
+        } else {
+          setError(`Feedback submission failed: ${errData.error || res.statusText}`);
+        }
         return;
       }
 
@@ -151,9 +245,9 @@ export default function FaultReport() {
   };
 
   const assignFault = async (faultId: number, assignedToId: string | number | null) => {
-    const token = localStorage.getItem('access_token');
+    const token = await getValidToken();
     if (!token) {
-      setError('You must sign in to assign faults');
+      setError('Please sign in to assign faults');
       return;
     }
     const headers: any = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
@@ -172,7 +266,8 @@ export default function FaultReport() {
         if (res.status === 401 || res.status === 403) {
           localStorage.removeItem('access_token');
           localStorage.removeItem('refresh_token');
-          setError('Not authorized — please sign in');
+          setIsAuthenticated(false);
+          setError('Session expired. Please sign in again.');
         } else if (errData.error) {
           setError(`Assignment failed: ${errData.error}`);
         } else {
@@ -212,9 +307,9 @@ export default function FaultReport() {
   };
 
   const toggleFaultStatus = async (id: number, currentStatus: string) => {
-    const token = localStorage.getItem('access_token');
+    const token = await getValidToken();
     if (!token) {
-      setError('You must sign in to change fault status');
+      setError('Please sign in to change fault status');
       return;
     }
     const headers: any = { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` };
@@ -228,7 +323,8 @@ export default function FaultReport() {
         if (res.status === 401 || res.status === 403) {
           localStorage.removeItem('access_token');
           localStorage.removeItem('refresh_token');
-          setError('Not authorized — please sign in');
+          setIsAuthenticated(false);
+          setError('Session expired. Please sign in again.');
         }
         // revert on error
         setFaults(prev);
