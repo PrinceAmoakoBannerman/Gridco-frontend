@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="80" viewBox="0 0 400 80">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1">
+      <stop offset="0%" stop-color="#ff7a00"/>
+      <stop offset="100%" stop-color="#00a64f"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="80" rx="6" fill="none" />
+  <g transform="translate(8,8)">
+    <circle cx="28" cy="28" r="28" fill="url(#g)" />
+    <polygon points="10,28 22,18 20,26 36,18 24,38 26,30 10,28" fill="#fff" transform="translate(4,0) scale(1.1)"/>
+    <text x="74" y="38" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="700" fill="#0b2545">GRID</text>
+    <text x="170" y="38" font-family="Inter, Arial, sans-serif" font-size="28" font-weight="600" fill="#0b2545">Co</text>
+    <text x="74" y="58" font-family="Inter, Arial, sans-serif" font-size="12" fill="#9aa5b1">Backbone to Power Delivery</text>
+  </g>
+</svg>
