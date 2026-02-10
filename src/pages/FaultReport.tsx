@@ -24,6 +24,38 @@ export default function FaultReport() {
   const [feedbacks, setFeedbacks] = useState<{[key: number]: any[]}>({});
   const [feedbackForm, setFeedbackForm] = useState<{[key: number]: {name: string; email: string; text: string}}>({});
   const [loadedFeedbacks, setLoadedFeedbacks] = useState<Set<number>>(new Set());
+  
+  // Search and filter states
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterStatus, setFilterStatus] = useState('all');
+  const [filterSeverity, setFilterSeverity] = useState('all');
+  const [filterAssigned, setFilterAssigned] = useState('all');
+
+  // Computed filtered faults
+  const filteredFaults = React.useMemo(() => {
+    return faults.filter(f => {
+      // Search filter
+      const searchLower = searchTerm.toLowerCase();
+      const matchesSearch = !searchTerm || 
+        f.title?.toLowerCase().includes(searchLower) ||
+        f.description?.toLowerCase().includes(searchLower) ||
+        f.location?.toLowerCase().includes(searchLower) ||
+        f.reported_by?.toLowerCase().includes(searchLower);
+      
+      // Status filter
+      const matchesStatus = filterStatus === 'all' || f.status?.toLowerCase() === filterStatus.toLowerCase();
+      
+      // Severity filter
+      const matchesSeverity = filterSeverity === 'all' || f.severity?.toLowerCase() === filterSeverity.toLowerCase();
+      
+      // Assignment filter
+      const matchesAssigned = filterAssigned === 'all' || 
+        (filterAssigned === 'assigned' && f.assigned_to) ||
+        (filterAssigned === 'unassigned' && !f.assigned_to);
+      
+      return matchesSearch && matchesStatus && matchesSeverity && matchesAssigned;
+    });
+  }, [faults, searchTerm, filterStatus, filterSeverity, filterAssigned]);
 
   // Check auth status and refresh token if needed on mount
   React.useEffect(() => {
@@ -365,11 +397,98 @@ export default function FaultReport() {
       </form>
 
         <div className="mt-4 sm:mt-6">
-          <h2 className="text-lg sm:text-xl font-semibold mb-2 dark:text-white">Existing Faults</h2>
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+            <h2 className="text-lg sm:text-xl font-semibold dark:text-white">Existing Faults</h2>
+            <div className="text-sm text-gray-600 dark:text-gray-400">
+              Showing {filteredFaults.length} of {faults.length} faults
+            </div>
+          </div>
+
+          {/* Search and Filter Controls */}
+          <div className="bg-white dark:bg-gray-800 p-4 rounded shadow mb-4 space-y-3">
+            {/* Search */}
+            <div>
+              <label className="block text-sm font-medium mb-2 dark:text-gray-300">Search</label>
+              <input
+                type="text"
+                placeholder="Search by title, description, location, or reporter..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full border dark:border-gray-600 px-3 py-2 text-sm rounded bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
+              />
+            </div>
+
+            {/* Filters */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div>
+                <label className="block text-sm font-medium mb-2 dark:text-gray-300">Status</label>
+                <select
+                  value={filterStatus}
+                  onChange={(e) => setFilterStatus(e.target.value)}
+                  className="w-full border dark:border-gray-600 px-3 py-2 text-sm rounded bg-white dark:bg-gray-700 dark:text-white"
+                >
+                  <option className="bg-white dark:bg-gray-700 text-black dark:text-white" value="all">All Status</option>
+                  <option className="bg-white dark:bg-gray-700 text-black dark:text-white" value="open">Open</option>
+                  <option className="bg-white dark:bg-gray-700 text-black dark:text-white" value="in progress">In Progress</option>
+                  <option className="bg-white dark:bg-gray-700 text-black dark:text-white" value="resolved">Resolved</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2 dark:text-gray-300">Severity</label>
+                <select
+                  value={filterSeverity}
+                  onChange={(e) => setFilterSeverity(e.target.value)}
+                  className="w-full border dark:border-gray-600 px-3 py-2 text-sm rounded bg-white dark:bg-gray-700 dark:text-white"
+                >
+                  <option className="bg-white dark:bg-gray-700 text-black dark:text-white" value="all">All Severity</option>
+                  <option className="bg-white dark:bg-gray-700 text-black dark:text-white" value="low">Low</option>
+                  <option className="bg-white dark:bg-gray-700 text-black dark:text-white" value="medium">Medium</option>
+                  <option className="bg-white dark:bg-gray-700 text-black dark:text-white" value="high">High</option>
+                  <option className="bg-white dark:bg-gray-700 text-black dark:text-white" value="critical">Critical</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-2 dark:text-gray-300">Assignment</label>
+                <select
+                  value={filterAssigned}
+                  onChange={(e) => setFilterAssigned(e.target.value)}
+                  className="w-full border dark:border-gray-600 px-3 py-2 text-sm rounded bg-white dark:bg-gray-700 dark:text-white"
+                >
+                  <option className="bg-white dark:bg-gray-700 text-black dark:text-white" value="all">All Faults</option>
+                  <option className="bg-white dark:bg-gray-700 text-black dark:text-white" value="assigned">Assigned</option>
+                  <option className="bg-white dark:bg-gray-700 text-black dark:text-white" value="unassigned">Unassigned</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Clear Filters Button */}
+            {(searchTerm || filterStatus !== 'all' || filterSeverity !== 'all' || filterAssigned !== 'all') && (
+              <div className="flex justify-end">
+                <button
+                  onClick={() => {
+                    setSearchTerm('');
+                    setFilterStatus('all');
+                    setFilterSeverity('all');
+                    setFilterAssigned('all');
+                  }}
+                  className="px-3 py-1 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded text-sm hover:bg-gray-300 dark:hover:bg-gray-600"
+                >
+                  Clear Filters
+                </button>
+              </div>
+            )}
+          </div>
+
           {loadingFaults ? <div className="text-sm dark:text-gray-400">Loading faults…</div> : (
             <ul className="space-y-3">
-              {faults.length === 0 && <li className="text-sm text-gray-500 dark:text-gray-400">No fault reports</li>}
-              {faults.map(f => (
+              {filteredFaults.length === 0 && (
+                <li className="text-sm text-gray-500 dark:text-gray-400">
+                  {faults.length === 0 ? 'No fault reports' : 'No faults match your search criteria'}
+                </li>
+              )}
+              {filteredFaults.map(f => (
                 <li key={f.id} className="p-3 border dark:border-gray-700 rounded bg-white dark:bg-gray-800 shadow-sm">
                   <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
                     <div className="flex-1">

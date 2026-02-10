@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { API_BASE_URL } from '../config';
 
@@ -23,6 +23,28 @@ export default function AdminDashboard(): JSX.Element {
   const [fixing, setFixing] = useState<number | null>(null);
   const [assigningId, setAssigningId] = useState<number | null>(null);
   const [faults, setFaults] = useState<any[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterStatus, setFilterStatus] = useState('all');
+  const [filterSeverity, setFilterSeverity] = useState('all');
+  const [filterAssigned, setFilterAssigned] = useState('all');
+
+  const filteredFaults = React.useMemo(() => {
+    return faults.filter(f => {
+      const matchesSearch = !searchTerm || 
+        f.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        f.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        f.location?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        f.reported_by?.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      const matchesStatus = filterStatus === 'all' || f.status?.toLowerCase() === filterStatus;
+      const matchesSeverity = filterSeverity === 'all' || f.severity?.toLowerCase() === filterSeverity;
+      const matchesAssigned = filterAssigned === 'all' || 
+        (filterAssigned === 'assigned' && f.assigned_to) ||
+        (filterAssigned === 'unassigned' && !f.assigned_to);
+      
+      return matchesSearch && matchesStatus && matchesSeverity && matchesAssigned;
+    });
+  }, [faults, searchTerm, filterStatus, filterSeverity, filterAssigned]);
 
   useEffect(() => {
     const load = async () => {
@@ -320,13 +342,81 @@ export default function AdminDashboard(): JSX.Element {
         </div>
 
         <div className="bg-white dark:bg-gray-800 p-4 rounded shadow">
-          <div className="text-sm text-gray-600 dark:text-gray-300">All Faults</div>
+          <div className="flex justify-between items-center mb-4">
+            <div className="text-sm text-gray-600 dark:text-gray-300">All Faults</div>
+            <div className="text-xs text-gray-500 dark:text-gray-400">
+              Showing {filteredFaults.length} of {faults.length} faults
+            </div>
+          </div>
+
+          {/* Search and Filter Controls */}
+          <div className="mb-4 space-y-3">
+            <input
+              type="text"
+              placeholder="Search faults by title, description, location, or reporter..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full px-3 py-2 border dark:border-gray-600 rounded text-sm bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
+            />
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <select
+                value={filterStatus}
+                onChange={(e) => setFilterStatus(e.target.value)}
+                className="px-3 py-2 border dark:border-gray-600 rounded text-sm bg-white dark:bg-gray-700 dark:text-white"
+              >
+                <option value="all" className="dark:bg-gray-700 dark:text-white">All Status</option>
+                <option value="open" className="dark:bg-gray-700 dark:text-white">Open</option>
+                <option value="in progress" className="dark:bg-gray-700 dark:text-white">In Progress</option>
+                <option value="resolved" className="dark:bg-gray-700 dark:text-white">Resolved</option>
+              </select>
+
+              <select
+                value={filterSeverity}
+                onChange={(e) => setFilterSeverity(e.target.value)}
+                className="px-3 py-2 border dark:border-gray-600 rounded text-sm bg-white dark:bg-gray-700 dark:text-white"
+              >
+                <option value="all" className="dark:bg-gray-700 dark:text-white">All Severity</option>
+                <option value="low" className="dark:bg-gray-700 dark:text-white">Low</option>
+                <option value="medium" className="dark:bg-gray-700 dark:text-white">Medium</option>
+                <option value="high" className="dark:bg-gray-700 dark:text-white">High</option>
+                <option value="critical" className="dark:bg-gray-700 dark:text-white">Critical</option>
+              </select>
+
+              <select
+                value={filterAssigned}
+                onChange={(e) => setFilterAssigned(e.target.value)}
+                className="px-3 py-2 border dark:border-gray-600 rounded text-sm bg-white dark:bg-gray-700 dark:text-white"
+              >
+                <option value="all" className="dark:bg-gray-700 dark:text-white">All Assignments</option>
+                <option value="assigned" className="dark:bg-gray-700 dark:text-white">Assigned</option>
+                <option value="unassigned" className="dark:bg-gray-700 dark:text-white">Unassigned</option>
+              </select>
+            </div>
+
+            {(searchTerm || filterStatus !== 'all' || filterSeverity !== 'all' || filterAssigned !== 'all') && (
+              <button
+                onClick={() => {
+                  setSearchTerm('');
+                  setFilterStatus('all');
+                  setFilterSeverity('all');
+                  setFilterAssigned('all');
+                }}
+                className="text-xs text-blue-600 dark:text-blue-400 hover:underline"
+              >
+                Clear Filters
+              </button>
+            )}
+          </div>
+
           <div className="mt-2">
             <ul className="mt-3 max-h-96 overflow-auto space-y-2">
-              {faults.length === 0 ? (
-                <li className="text-sm text-gray-500 dark:text-gray-400">No faults</li>
+              {filteredFaults.length === 0 ? (
+                <li className="text-sm text-gray-500 dark:text-gray-400">
+                  {faults.length === 0 ? 'No faults' : 'No faults match the current filters'}
+                </li>
               ) : (
-                faults.map((f) => (
+                filteredFaults.map((f) => (
                   <li key={f.id} className="py-2 px-2 border dark:border-gray-700 rounded bg-gray-50 dark:bg-gray-700">
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
