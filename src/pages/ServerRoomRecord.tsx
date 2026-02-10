@@ -79,73 +79,73 @@ export default function ServerRoomRecord() {
     }
   };
 
-  if (loading) return <div>Loading server room records…</div>;
-  if (error) return <div className="text-red-600">Error: {error}</div>;
+  if (loading) return <div className="text-gray-900 dark:text-white">Loading server room records…</div>;
+  if (error) return <div className="text-red-600 dark:text-red-400">Error: {error}</div>;
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold mb-4">Server Room Entry Log</h1>
+      <h1 className="text-2xl font-semibold mb-4 text-gray-900 dark:text-white">Server Room Entry Log</h1>
 
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded shadow mb-6 max-w-3xl">
+      <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 p-6 rounded shadow mb-6 max-w-3xl">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end">
           <label className="col-span-2">
-            <div className="text-sm text-gray-600 mb-1">Staff</div>
-            <input aria-label="Staff" name="staff" value={form.staff} onChange={handleChange} placeholder="Staff" className="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gridco-200" required />
+            <div className="text-sm text-gray-600 dark:text-gray-300 mb-1">Staff</div>
+            <input aria-label="Staff" name="staff" value={form.staff} onChange={handleChange} placeholder="Staff" className="w-full border dark:border-gray-600 rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-gridco-200 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400" required />
           </label>
           <label>
-            <div className="text-sm text-gray-600 mb-1">Date</div>
-            <input aria-label="Date" name="date" value={form.date} onChange={handleChange} type="date" className="w-full border rounded px-3 py-2" required />
+            <div className="text-sm text-gray-600 dark:text-gray-300 mb-1">Date</div>
+            <input aria-label="Date" name="date" value={form.date} onChange={handleChange} type="date" className="w-full border dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-700 dark:text-white" required />
           </label>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
           <label>
-            <div className="text-sm text-gray-600 mb-1">Time in</div>
-            <input aria-label="Time in" name="time_in" value={form.time_in} onChange={handleChange} type="time" className="w-full border rounded px-3 py-2" required />
+            <div className="text-sm text-gray-600 dark:text-gray-300 mb-1">Time in</div>
+            <input aria-label="Time in" name="time_in" value={form.time_in} onChange={handleChange} type="time" className="w-full border dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-700 dark:text-white" required />
           </label>
           <label>
-            <div className="text-sm text-gray-600 mb-1">Time out</div>
-            <input aria-label="Time out" name="time_out" value={form.time_out} onChange={handleChange} type="time" className="w-full border rounded px-3 py-2" />
+            <div className="text-sm text-gray-600 dark:text-gray-300 mb-1">Time out</div>
+            <input aria-label="Time out" name="time_out" value={form.time_out} onChange={handleChange} type="time" className="w-full border dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-700 dark:text-white" />
           </label>
         </div>
 
         <label className="block mt-3">
-          <div className="text-sm text-gray-600 mb-1">Reason for entry</div>
-          <textarea aria-label="Reason for entry" name="reason" value={form.reason} onChange={handleChange} placeholder="Reason for entry" className="w-full border rounded px-3 py-2 min-h-[80px]" />
+          <div className="text-sm text-gray-600 dark:text-gray-300 mb-1">Reason for entry</div>
+          <textarea aria-label="Reason for entry" name="reason" value={form.reason} onChange={handleChange} placeholder="Reason for entry" className="w-full border dark:border-gray-600 rounded px-3 py-2 min-h-[80px] bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400" />
         </label>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
           <label>
-            <div className="text-sm text-gray-600 mb-1">Equipment touched</div>
-            <input name="equipment_touched" value={form.equipment_touched} onChange={handleChange} placeholder="Equipment touched" className="w-full border rounded px-3 py-2" />
+            <div className="text-sm text-gray-600 dark:text-gray-300 mb-1">Equipment touched</div>
+            <input name="equipment_touched" value={form.equipment_touched} onChange={handleChange} placeholder="Equipment touched" className="w-full border dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400" />
           </label>
           <label>
-            <div className="text-sm text-gray-600 mb-1">Supervisor on duty</div>
-            <input name="supervisor" value={form.supervisor} onChange={handleChange} placeholder="Supervisor on duty" className="w-full border rounded px-3 py-2" />
+            <div className="text-sm text-gray-600 dark:text-gray-300 mb-1">Supervisor on duty</div>
+            <input name="supervisor" value={form.supervisor} onChange={handleChange} placeholder="Supervisor on duty" className="w-full border dark:border-gray-600 rounded px-3 py-2 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400" />
           </label>
         </div>
 
         <div className="mt-4 flex items-center gap-3">
-          <button type="submit" className="bg-blue-600 text-white px-5 py-2 rounded disabled:opacity-60" disabled={submitting}>
+          <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded disabled:opacity-60" disabled={submitting}>
             {submitting ? 'Saving…' : 'Save Entry'}
           </button>
-          {success && <div className="text-green-600 text-sm">{success}</div>}
-          {error && <div className="text-red-600 text-sm">{error}</div>}
+          {success && <div className="text-green-600 dark:text-green-400 text-sm">{success}</div>}
+          {error && <div className="text-red-600 dark:text-red-400 text-sm">{error}</div>}
         </div>
       </form>
 
       <div className="space-y-3">
-        {(!items || items.length === 0) && <div>No server room records available.</div>}
+        {(!items || items.length === 0) && <div className="text-gray-700 dark:text-gray-300">No server room records available.</div>}
         {items?.map((it) => (
-          <div key={it.id} className="bg-white p-3 rounded shadow">
+          <div key={it.id} className="bg-white dark:bg-gray-800 p-3 rounded shadow">
             <div className="flex justify-between items-center">
-              <div className="font-medium">{it.staff}</div>
-              <div className="text-sm text-gray-600">{it.date}</div>
+              <div className="font-medium dark:text-white">{it.staff}</div>
+              <div className="text-sm text-gray-600 dark:text-gray-400">{it.date}</div>
             </div>
-            <div className="text-sm text-gray-700">{it.time_in} — {it.time_out || '—'}</div>
-            <div className="mt-2">Reason: {it.reason || '—'}</div>
-            <div className="mt-1 text-sm">Equipment: {it.equipment_touched || '—'}</div>
-            <div className="mt-1 text-sm">Supervisor: {it.supervisor || '—'}</div>
+            <div className="text-sm text-gray-700 dark:text-gray-300">{it.time_in} — {it.time_out || '—'}</div>
+            <div className="mt-2 dark:text-gray-300">Reason: {it.reason || '—'}</div>
+            <div className="mt-1 text-sm dark:text-gray-300">Equipment: {it.equipment_touched || '—'}</div>
+            <div className="mt-1 text-sm dark:text-gray-300">Supervisor: {it.supervisor || '—'}</div>
           </div>
         ))}
       </div>

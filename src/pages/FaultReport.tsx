@@ -324,40 +324,40 @@ export default function FaultReport() {
 
   return (
     <div className="p-3 sm:p-6">
-      <h1 className="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4">Fault / Incident Report</h1>
+      <h1 className="text-xl sm:text-2xl font-semibold mb-3 sm:mb-4 text-gray-900 dark:text-white">Fault / Incident Report</h1>
 
-      <form onSubmit={handleSubmit} className="bg-white p-3 sm:p-4 rounded shadow max-w-2xl space-y-3">
-        <input name="title" value={form.title} onChange={handleChange} placeholder="Fault title" className="w-full border px-2 py-2 text-sm sm:text-base rounded" required />
-        <textarea name="description" value={form.description} onChange={handleChange} placeholder="Description" className="w-full border px-2 py-2 text-sm sm:text-base rounded min-h-[80px]" required />
+      <form onSubmit={handleSubmit} className="bg-white dark:bg-gray-800 p-3 sm:p-4 rounded shadow max-w-2xl space-y-3">
+        <input name="title" value={form.title} onChange={handleChange} placeholder="Fault title" className="w-full border dark:border-gray-600 px-2 py-2 text-sm sm:text-base rounded bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400" required />
+        <textarea name="description" value={form.description} onChange={handleChange} placeholder="Description" className="w-full border dark:border-gray-600 px-2 py-2 text-sm sm:text-base rounded min-h-[80px] bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400" required />
         <div className="flex flex-col sm:flex-row gap-2">
-          <input name="date_reported" value={form.date_reported} onChange={handleChange} type="date" className="border px-2 py-2 text-sm sm:text-base rounded w-full sm:w-auto" required />
-          <input name="reported_by" value={form.reported_by} onChange={handleChange} placeholder="Reported by" className="border px-2 py-2 text-sm sm:text-base rounded flex-1" required />
+          <input name="date_reported" value={form.date_reported} onChange={handleChange} type="date" className="border dark:border-gray-600 px-2 py-2 text-sm sm:text-base rounded w-full sm:w-auto bg-white dark:bg-gray-700 dark:text-white" required />
+          <input name="reported_by" value={form.reported_by} onChange={handleChange} placeholder="Reported by" className="border dark:border-gray-600 px-2 py-2 text-sm sm:text-base rounded flex-1 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400" required />
         </div>
 
         <div className="flex flex-col sm:flex-row gap-2">
-          <input name="location" value={form.location} onChange={handleChange} placeholder="Location (substation / office)" className="border px-2 py-2 text-sm sm:text-base rounded flex-1" required />
-          <select name="severity" value={form.severity} onChange={handleChange} className="border px-2 py-2 text-sm sm:text-base rounded">
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-            <option value="critical">Critical</option>
+          <input name="location" value={form.location} onChange={handleChange} placeholder="Location (substation / office)" className="border dark:border-gray-600 px-2 py-2 text-sm sm:text-base rounded flex-1 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400" required />
+          <select name="severity" value={form.severity} onChange={handleChange} className="border dark:border-gray-600 px-2 py-2 text-sm sm:text-base rounded bg-white dark:bg-gray-700 dark:text-white">
+            <option className="bg-white dark:bg-gray-700 text-black dark:text-white" value="low">Low</option>
+            <option className="bg-white dark:bg-gray-700 text-black dark:text-white" value="medium">Medium</option>
+            <option className="bg-white dark:bg-gray-700 text-black dark:text-white" value="high">High</option>
+            <option className="bg-white dark:bg-gray-700 text-black dark:text-white" value="critical">Critical</option>
           </select>
-          <select name="status" value={form.status} onChange={handleChange} className="border px-2 py-2 text-sm sm:text-base rounded">
-            <option value="open">Open</option>
-            <option value="in progress">In Progress</option>
-            <option value="resolved">Resolved</option>
+          <select name="status" value={form.status} onChange={handleChange} className="border dark:border-gray-600 px-2 py-2 text-sm sm:text-base rounded bg-white dark:bg-gray-700 dark:text-white">
+            <option className="bg-white dark:bg-gray-700 text-black dark:text-white" value="open">Open</option>
+            <option className="bg-white dark:bg-gray-700 text-black dark:text-white" value="in progress">In Progress</option>
+            <option className="bg-white dark:bg-gray-700 text-black dark:text-white" value="resolved">Resolved</option>
           </select>
         </div>
 
-        <textarea name="resolution_remarks" value={form.resolution_remarks} onChange={handleChange} placeholder="Resolution remarks (optional)" className="w-full border px-2 py-2 text-sm sm:text-base rounded min-h-[60px]" />
+        <textarea name="resolution_remarks" value={form.resolution_remarks} onChange={handleChange} placeholder="Resolution remarks (optional)" className="w-full border dark:border-gray-600 px-2 py-2 text-sm sm:text-base rounded min-h-[60px] bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400" />
 
         <div>
-          <label className="block mb-1 text-sm sm:text-base">Attach image/file</label>
-          <input type="file" onChange={handleFile} className="text-sm" />
+          <label className="block mb-1 text-sm sm:text-base dark:text-gray-300">Attach image/file</label>
+          <input type="file" onChange={handleFile} className="text-sm dark:text-gray-300" />
         </div>
 
-        {error && <div className="text-red-600 text-sm">{error}</div>}
-        {success && <div className="text-green-600 text-sm">{success}</div>}
+        {error && <div className="text-red-600 dark:text-red-400 text-sm">{error}</div>}
+        {success && <div className="text-green-600 dark:text-green-400 text-sm">{success}</div>}
 
         <div>
           <button type="submit" className="w-full sm:w-auto bg-blue-600 text-white px-4 py-2 rounded text-sm sm:text-base" disabled={submitting}>{submitting ? 'Submitting…' : 'Submit Report'}</button>
@@ -365,52 +365,52 @@ export default function FaultReport() {
       </form>
 
         <div className="mt-4 sm:mt-6">
-          <h2 className="text-lg sm:text-xl font-semibold mb-2">Existing Faults</h2>
-          {loadingFaults ? <div className="text-sm">Loading faults…</div> : (
+          <h2 className="text-lg sm:text-xl font-semibold mb-2 dark:text-white">Existing Faults</h2>
+          {loadingFaults ? <div className="text-sm dark:text-gray-400">Loading faults…</div> : (
             <ul className="space-y-3">
-              {faults.length === 0 && <li className="text-sm text-gray-500">No fault reports</li>}
+              {faults.length === 0 && <li className="text-sm text-gray-500 dark:text-gray-400">No fault reports</li>}
               {faults.map(f => (
-                <li key={f.id} className="p-3 border rounded bg-white shadow-sm">
+                <li key={f.id} className="p-3 border dark:border-gray-700 rounded bg-white dark:bg-gray-800 shadow-sm">
                   <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-3">
                     <div className="flex-1">
-                      <div className="font-medium text-sm sm:text-base">{f.title}</div>
-                      <div className="text-xs text-gray-500 mt-1">{f.location} — reported by {f.reported_by || '—'}</div>
-                      <div className="text-xs sm:text-sm mt-2">{f.description}</div>
-                      <div className="text-xs text-gray-700 mt-2">
-                        <span className="font-medium">Assigned to:</span> {
+                      <div className="font-medium text-sm sm:text-base dark:text-white">{f.title}</div>
+                      <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">{f.location} — reported by {f.reported_by || '—'}</div>
+                      <div className="text-xs sm:text-sm mt-2 dark:text-gray-300">{f.description}</div>
+                      <div className="text-xs text-gray-700 dark:text-gray-300 mt-2">
+                        <span className="font-medium dark:text-gray-200">Assigned to:</span> {
                           f.assigned_to ? (
                             typeof f.assigned_to === 'object' 
                               ? `${f.assigned_to.first_name || f.assigned_to.username || f.assigned_to.name || 'Staff ' + f.assigned_to.id}`
                               : f.assigned_to
                           ) : (
-                            <span className="text-gray-500 italic">Unassigned</span>
+                            <span className="text-gray-500 dark:text-gray-400 italic">Unassigned</span>
                           )
                         }
                       </div>
                       {f.attachment_url && (
-                        <div className="text-xs text-gray-700 mt-2">
-                          <span className="font-medium">Attachment:</span> {' '}
-                          <a href={f.attachment_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                        <div className="text-xs text-gray-700 dark:text-gray-300 mt-2">
+                          <span className="font-medium dark:text-gray-200">Attachment:</span> {' '}
+                          <a href={f.attachment_url} target="_blank" rel="noopener noreferrer" className="text-blue-600 dark:text-blue-400 hover:underline">
                             View / Download
                           </a>
                         </div>
                       )}
                     </div>
                     <div className="flex sm:flex-col items-center sm:items-end gap-2 sm:gap-0">
-                      <div className="text-xs sm:text-sm flex-1 sm:flex-none sm:mb-2">Status: {f.status}</div>
-                      <button onClick={() => toggleFaultStatus(f.id, f.status)} className="px-2 py-1 bg-blue-600 text-white rounded text-xs sm:text-sm whitespace-nowrap">
+                      <div className="text-xs sm:text-sm flex-1 sm:flex-none sm:mb-2 dark:text-gray-300">Status: {f.status}</div>
+                      <button onClick={() => toggleFaultStatus(f.id, f.status)} className="px-2 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-xs sm:text-sm whitespace-nowrap">
                         {f.status && f.status.toLowerCase() !== 'resolved' ? 'Mark resolved' : 'Reopen'}
                       </button>
                     </div>
                   </div>
-                  <div className="mt-3 pt-3 border-t">
-                    <label className="block text-xs font-medium mb-2">Assign to staff (name or ID):</label>
+                  <div className="mt-3 pt-3 border-t dark:border-gray-700">
+                    <label className="block text-xs font-medium mb-2 dark:text-gray-300">Assign to staff (name or ID):</label>
                     <div className="flex flex-col sm:flex-row gap-2">
                       <input 
                         type="text" 
                         placeholder="Staff name or ID" 
                         id={`assign-input-${f.id}`}
-                        className="border px-2 py-2 flex-1 text-sm rounded"
+                        className="border dark:border-gray-600 px-2 py-2 flex-1 text-sm rounded bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                       />
                       <div className="flex gap-2">
                         <button 
@@ -440,18 +440,18 @@ export default function FaultReport() {
                     </div>
 
                     {f.status && f.status.toLowerCase() === 'resolved' && (
-                      <div className="mt-4 pt-4 border-t">
-                        <h4 className="text-sm font-medium mb-3">Feedback for this resolved fault:</h4>
+                      <div className="mt-4 pt-4 border-t dark:border-gray-700">
+                        <h4 className="text-sm font-medium mb-3 dark:text-white">Feedback for this resolved fault:</h4>
                         
                         {/* Existing feedbacks */}
                         {feedbacks[f.id] && feedbacks[f.id].length > 0 && (
-                          <div className="mb-4 space-y-2 bg-blue-50 p-3 rounded">
-                            <div className="text-xs font-semibold text-blue-900">Received Feedback:</div>
+                          <div className="mb-4 space-y-2 bg-blue-50 dark:bg-blue-900/30 p-3 rounded">
+                            <div className="text-xs font-semibold text-blue-900 dark:text-blue-300">Received Feedback:</div>
                             {feedbacks[f.id].map((fb: any, idx: number) => (
-                              <div key={idx} className="text-xs border-l-2 border-blue-300 pl-2">
-                                <div className="font-medium">{fb.staff_name} ({fb.staff_email})</div>
-                                <div className="text-gray-700 mt-1">{fb.feedback_text}</div>
-                                <div className="text-gray-500 text-xs mt-1">{new Date(fb.date_submitted).toLocaleString()}</div>
+                              <div key={idx} className="text-xs border-l-2 border-blue-300 dark:border-blue-600 pl-2">
+                                <div className="font-medium dark:text-white">{fb.staff_name} ({fb.staff_email})</div>
+                                <div className="text-gray-700 dark:text-gray-300 mt-1">{fb.feedback_text}</div>
+                                <div className="text-gray-500 dark:text-gray-400 text-xs mt-1">{new Date(fb.date_submitted).toLocaleString()}</div>
                               </div>
                             ))}
                           </div>
@@ -467,7 +467,7 @@ export default function FaultReport() {
                               ...prev,
                               [f.id]: { ...prev[f.id] || { name: '', email: '', text: '' }, name: e.target.value }
                             }))}
-                            className="w-full border px-2 py-1 text-xs rounded"
+                            className="w-full border dark:border-gray-600 px-2 py-1 text-xs rounded bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                           />
                           <input
                             type="email"
@@ -477,7 +477,7 @@ export default function FaultReport() {
                               ...prev,
                               [f.id]: { ...prev[f.id] || { name: '', email: '', text: '' }, email: e.target.value }
                             }))}
-                            className="w-full border px-2 py-1 text-xs rounded"
+                            className="w-full border dark:border-gray-600 px-2 py-1 text-xs rounded bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                           />
                           <textarea
                             placeholder="Your feedback..."
@@ -486,11 +486,11 @@ export default function FaultReport() {
                               ...prev,
                               [f.id]: { ...prev[f.id] || { name: '', email: '', text: '' }, text: e.target.value }
                             }))}
-                            className="w-full border px-2 py-1 text-xs rounded min-h-[60px]"
+                            className="w-full border dark:border-gray-600 px-2 py-1 text-xs rounded min-h-[60px] bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
                           />
                           <button
                             onClick={() => submitFeedback(f.id)}
-                            className="w-full px-3 py-2 bg-purple-600 text-white rounded text-xs hover:bg-purple-700"
+                            className="w-full px-3 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded text-xs"
                           >
                             Submit Feedback
                           </button>

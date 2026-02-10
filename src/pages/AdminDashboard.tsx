@@ -214,20 +214,20 @@ export default function AdminDashboard(): JSX.Element {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-semibold">Admin Dashboard</h1>
+      <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Admin Dashboard</h1>
       {error && (
-        <div className="mt-3 p-3 bg-red-50 border border-red-200 text-red-700 rounded">{error}</div>
+        <div className="mt-3 p-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 text-red-700 dark:text-red-300 rounded">{error}</div>
       )}
       {success && (
-        <div className="mt-3 p-3 bg-green-50 border border-green-200 text-green-700 rounded">{success}</div>
+        <div className="mt-3 p-3 bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-800 text-green-700 dark:text-green-300 rounded">{success}</div>
       )}
 
       <div className="mt-4 grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded shadow">
-          <div className="text-sm text-gray-500">Staff online today</div>
-          <div className="text-2xl font-bold">{data.total_staff_online_today}</div>
+        <div className="bg-white dark:bg-gray-800 p-4 rounded shadow">
+          <div className="text-sm text-gray-500 dark:text-gray-400">Staff online today</div>
+          <div className="text-2xl font-bold dark:text-white">{data.total_staff_online_today}</div>
           {active_staff_today && active_staff_today.length > 0 && (
-            <ul className="text-xs text-gray-600 mt-2">
+            <ul className="text-xs text-gray-600 dark:text-gray-300 mt-2">
               {active_staff_today.slice(0,3).map(s => (
                 <li key={s.id}>{s.name}{s.role ? ` — ${s.role}` : ''}</li>
               ))}
@@ -235,14 +235,14 @@ export default function AdminDashboard(): JSX.Element {
             </ul>
           )}
         </div>
-        <div className="bg-white p-4 rounded shadow"> <div className="text-sm text-gray-500">Active faults</div><div className="text-2xl font-bold">{data.active_faults}</div></div>
-        <div className="bg-white p-4 rounded shadow"> <div className="text-sm text-gray-500">Server room entries</div><div className="text-2xl font-bold">{data.server_room_entries_today}</div></div>
-        <div className="bg-white p-4 rounded shadow"> <div className="text-sm text-gray-500">Field activities</div><div className="text-2xl font-bold">{data.field_activities_today}</div></div>
+        <div className="bg-white dark:bg-gray-800 p-4 rounded shadow"><div className="text-sm text-gray-500 dark:text-gray-400">Active faults</div><div className="text-2xl font-bold dark:text-white">{data.active_faults}</div></div>
+        <div className="bg-white dark:bg-gray-800 p-4 rounded shadow"><div className="text-sm text-gray-500 dark:text-gray-400">Server room entries</div><div className="text-2xl font-bold dark:text-white">{data.server_room_entries_today}</div></div>
+        <div className="bg-white dark:bg-gray-800 p-4 rounded shadow"><div className="text-sm text-gray-500 dark:text-gray-400">Field activities</div><div className="text-2xl font-bold dark:text-white">{data.field_activities_today}</div></div>
       </div>
 
       <div className="mt-6 grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white p-4 rounded shadow">
-          <div className="text-sm text-gray-600">Fault trends (7 days)</div>
+        <div className="bg-white dark:bg-gray-800 p-4 rounded shadow">
+          <div className="text-sm text-gray-600 dark:text-gray-300">Fault trends (7 days)</div>
           <div className="w-full h-48 mt-2">
             <ResponsiveContainer>
               <LineChart data={dates.map((d, i) => ({ date: d, faults: faults_trend[i] ?? 0 }))}>
@@ -255,8 +255,8 @@ export default function AdminDashboard(): JSX.Element {
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded shadow">
-          <div className="text-sm text-gray-600">Attendance trends (7 days)</div>
+        <div className="bg-white dark:bg-gray-800 p-4 rounded shadow">
+          <div className="text-sm text-gray-600 dark:text-gray-300">Attendance trends (7 days)</div>
           <div className="w-full h-48 mt-2">
             <ResponsiveContainer>
               <BarChart data={dates.map((d, i) => ({ date: d, attendance: attendance_trend[i] ?? 0 }))}>
@@ -271,22 +271,22 @@ export default function AdminDashboard(): JSX.Element {
       </div>
 
       {/* Field activities trend and lists for active staff / faults */}
-      <div className="mt-6 bg-white p-4 rounded shadow">
-        <div className="text-sm text-gray-600">Most visited substations</div>
+      <div className="mt-6 bg-white dark:bg-gray-800 p-4 rounded shadow">
+        <div className="text-sm text-gray-600 dark:text-gray-300">Most visited substations</div>
         <ul className="mt-2">
-          {most_visited_substations.length === 0 && <li className="text-sm text-gray-500">No data</li>}
+          {most_visited_substations.length === 0 && <li className="text-sm text-gray-500 dark:text-gray-400">No data</li>}
           {most_visited_substations.map((s, idx) => (
-            <li key={idx} className="flex justify-between py-2 border-b last:border-b-0">
-              <span>{s.name}</span>
-              <span className="text-sm text-gray-600">{s.count}</span>
+            <li key={idx} className="flex justify-between py-2 border-b dark:border-gray-700 last:border-b-0">
+              <span className="dark:text-white">{s.name}</span>
+              <span className="text-sm text-gray-600 dark:text-gray-400">{s.count}</span>
             </li>
           ))}
         </ul>
       </div>
 
       {/* Field activities trend - wide */}
-      <div className="mt-6 bg-white p-4 rounded shadow">
-        <div className="text-sm text-gray-600">Field activities (7 days)</div>
+      <div className="mt-6 bg-white dark:bg-gray-800 p-4 rounded shadow">
+        <div className="text-sm text-gray-600 dark:text-gray-300">Field activities (7 days)</div>
         <div className="w-full h-48 mt-2">
           <ResponsiveContainer>
             <LineChart data={dates.map((d, i) => ({ date: d, activities: field_activities_trend[i] ?? 0 }))}>
@@ -300,40 +300,40 @@ export default function AdminDashboard(): JSX.Element {
       </div>
 
       <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="bg-white p-4 rounded shadow">
-          <div className="text-sm text-gray-600">Active staff today</div>
+        <div className="bg-white dark:bg-gray-800 p-4 rounded shadow">
+          <div className="text-sm text-gray-600 dark:text-gray-300">Active staff today</div>
           <div className="mt-2">
-            <div className="text-2xl font-bold">{active_staff_today?.length ?? data.total_staff_online_today}</div>
+            <div className="text-2xl font-bold dark:text-white">{active_staff_today?.length ?? data.total_staff_online_today}</div>
             <ul className="mt-3 max-h-48 overflow-auto">
               {active_staff_today && active_staff_today.length > 0 ? (
                 active_staff_today.map((s) => (
-                  <li key={s.id} className="py-1 flex justify-between items-center border-b last:border-b-0">
-                    <span>{s.name}</span>
-                    <span className="text-xs text-gray-500">{s.role || 'Staff'}</span>
+                  <li key={s.id} className="py-1 flex justify-between items-center border-b dark:border-gray-700 last:border-b-0">
+                    <span className="dark:text-white">{s.name}</span>
+                    <span className="text-xs text-gray-500 dark:text-gray-400">{s.role || 'Staff'}</span>
                   </li>
                 ))
               ) : (
-                <li className="text-sm text-gray-500">No active staff list available.</li>
+                <li className="text-sm text-gray-500 dark:text-gray-400">No active staff list available.</li>
               )}
             </ul>
           </div>
         </div>
 
-        <div className="bg-white p-4 rounded shadow">
-          <div className="text-sm text-gray-600">All Faults</div>
+        <div className="bg-white dark:bg-gray-800 p-4 rounded shadow">
+          <div className="text-sm text-gray-600 dark:text-gray-300">All Faults</div>
           <div className="mt-2">
             <ul className="mt-3 max-h-96 overflow-auto space-y-2">
               {faults.length === 0 ? (
-                <li className="text-sm text-gray-500">No faults</li>
+                <li className="text-sm text-gray-500 dark:text-gray-400">No faults</li>
               ) : (
                 faults.map((f) => (
-                  <li key={f.id} className="py-2 px-2 border rounded bg-gray-50">
+                  <li key={f.id} className="py-2 px-2 border dark:border-gray-700 rounded bg-gray-50 dark:bg-gray-700">
                     <div className="flex justify-between items-start">
                       <div className="flex-1">
-                        <div className="font-medium text-sm">{f.title}</div>
-                        <div className="text-xs text-gray-600">{f.location} • Status: {f.status}</div>
-                        <div className="text-xs text-gray-700 mt-1">
-                          Assigned to: <span className="font-medium">{f.assigned_to || <span className="text-gray-500 italic">Unassigned</span>}</span>
+                        <div className="font-medium text-sm dark:text-white">{f.title}</div>
+                        <div className="text-xs text-gray-600 dark:text-gray-400">{f.location} • Status: {f.status}</div>
+                        <div className="text-xs text-gray-700 dark:text-gray-300 mt-1">
+                          Assigned to: <span className="font-medium dark:text-gray-200">{f.assigned_to || <span className="text-gray-500 dark:text-gray-400 italic">Unassigned</span>}</span>
                         </div>
                       </div>
                     </div>
@@ -342,7 +342,7 @@ export default function AdminDashboard(): JSX.Element {
                         type="text" 
                         placeholder="Staff name or ID" 
                         id={`assign-${f.id}`}
-                        className="border px-2 py-1 text-xs flex-1"
+                        className="border dark:border-gray-600 px-2 py-1 text-xs flex-1 bg-white dark:bg-gray-800 dark:text-white dark:placeholder-gray-400"
                       />
                       <button 
                         onClick={() => {

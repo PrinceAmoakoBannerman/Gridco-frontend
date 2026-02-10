@@ -149,7 +149,7 @@ export default function Home(): JSX.Element {
 
   return (
     <div className="p-6">
-      <div className="bg-white rounded shadow overflow-visible">
+      <div className="bg-white dark:bg-gray-800 rounded shadow overflow-visible">
         <div className="flex flex-col lg:flex-row lg:items-start gap-0">
           <div className="w-full lg:w-2/3 p-4 sm:p-6 lg:p-8">
               <div className="flex items-center gap-3 sm:gap-4">
@@ -164,17 +164,17 @@ export default function Home(): JSX.Element {
                 }}
               />
               <div>
-                <h2 className="text-xl sm:text-2xl font-bold text-gridco-800 leading-tight">Operations Portal</h2>
-                <p className="text-xs sm:text-sm text-gray-600 mt-0.5">Corporate operations — secure, professional, responsive.</p>
+                <h2 className="text-xl sm:text-2xl font-bold text-gridco-800 dark:text-white leading-tight">Operations Portal</h2>
+                <p className="text-xs sm:text-sm text-gray-600 dark:text-gray-400 mt-0.5">Corporate operations — secure, professional, responsive.</p>
               </div>
             </div>
 
             <div className="mt-6 sm:mt-8 grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-              <div className="p-3 sm:p-4 border rounded bg-white shadow-sm">
-                <div className="text-xs sm:text-sm text-gray-500 leading-tight">Total staff online today</div>
-                <div className="text-lg sm:text-xl font-semibold mt-1">{loadingSummary ? '…' : summary?.total_staff_online_today ?? '—'}</div>
+              <div className="p-3 sm:p-4 border dark:border-gray-700 rounded bg-white dark:bg-gray-700 shadow-sm">
+                <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 leading-tight">Total staff online today</div>
+                <div className="text-lg sm:text-xl font-semibold mt-1 dark:text-white">{loadingSummary ? '…' : summary?.total_staff_online_today ?? '—'}</div>
                 {summary?.active_staff_today && summary.active_staff_today.length > 0 && (
-                  <ul className="text-xs text-gray-600 mt-2">
+                  <ul className="text-xs text-gray-600 dark:text-gray-300 mt-2">
                     {summary.active_staff_today.slice(0,3).map(s => (
                       <li key={s.id}>{s.name}</li>
                     ))}
@@ -182,48 +182,48 @@ export default function Home(): JSX.Element {
                   </ul>
                 )}
               </div>
-              <div className="p-3 sm:p-4 border rounded bg-white shadow-sm">
-                <div className="text-xs sm:text-sm text-gray-500 leading-tight">Active faults</div>
-                <div className="text-lg sm:text-xl font-semibold mt-1">{loadingSummary ? '…' : summary?.active_faults ?? '—'}</div>
+              <div className="p-3 sm:p-4 border dark:border-gray-700 rounded bg-white dark:bg-gray-700 shadow-sm">
+                <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 leading-tight">Active faults</div>
+                <div className="text-lg sm:text-xl font-semibold mt-1 dark:text-white">{loadingSummary ? '…' : summary?.active_faults ?? '—'}</div>
               </div>
-              <div className="p-3 sm:p-4 border rounded bg-white shadow-sm">
-                <div className="text-xs sm:text-sm text-gray-500 leading-tight">Server room entries</div>
-                <div className="text-lg sm:text-xl font-semibold mt-1">{loadingSummary ? '…' : summary?.server_room_entries_today ?? '—'}</div>
+              <div className="p-3 sm:p-4 border dark:border-gray-700 rounded bg-white dark:bg-gray-700 shadow-sm">
+                <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 leading-tight">Server room entries</div>
+                <div className="text-lg sm:text-xl font-semibold mt-1 dark:text-white">{loadingSummary ? '…' : summary?.server_room_entries_today ?? '—'}</div>
               </div>
-              <div className="p-3 sm:p-4 border rounded bg-white shadow-sm">
-                <div className="text-xs sm:text-sm text-gray-500 leading-tight">Field activities today</div>
-                <div className="text-lg sm:text-xl font-semibold mt-1">{loadingSummary ? '…' : summary?.field_activities_today ?? '—'}</div>
+              <div className="p-3 sm:p-4 border dark:border-gray-700 rounded bg-white dark:bg-gray-700 shadow-sm">
+                <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 leading-tight">Field activities today</div>
+                <div className="text-lg sm:text-xl font-semibold mt-1 dark:text-white">{loadingSummary ? '…' : summary?.field_activities_today ?? '—'}</div>
               </div>
             </div>
 
-            <div className="mt-4 sm:mt-6 text-xs sm:text-sm text-gray-500">
+            <div className="mt-4 sm:mt-6 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
               Last updated: {new Date().toLocaleString()}
             </div>
           </div>
 
-          <aside className="w-full lg:w-1/3 bg-gray-50 p-4 sm:p-6 lg:order-none order-last">
+          <aside className="w-full lg:w-1/3 bg-gray-50 dark:bg-gray-700 p-4 sm:p-6 lg:order-none order-last">
             {!user ? (
               <div>
-                <h3 className="text-base sm:text-lg font-medium">Sign in</h3>
+                <h3 className="text-base sm:text-lg font-medium dark:text-white">Sign in</h3>
                 <form className="mt-3 sm:mt-4 space-y-3" onSubmit={signIn}>
                   <label className="block">
-                    <div className="text-xs sm:text-sm text-gray-600">Staff ID</div>
-                    <input value={email} onChange={e=>{ setEmail(e.target.value); setAuthMessage(null); }} className="w-full border rounded p-2 text-sm" type="text" />
+                    <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Staff ID</div>
+                    <input value={email} onChange={e=>{ setEmail(e.target.value); setAuthMessage(null); }} className="w-full border dark:border-gray-600 rounded p-2 text-sm bg-white dark:bg-gray-800 dark:text-white" type="text" />
                   </label>
                   <label className="block">
-                    <div className="text-xs sm:text-sm text-gray-600">Password</div>
-                    <input value={password} onChange={e=>{ setPassword(e.target.value); setAuthMessage(null); }} className="w-full border rounded p-2 text-sm" type="password" />
+                    <div className="text-xs sm:text-sm text-gray-600 dark:text-gray-300">Password</div>
+                    <input value={password} onChange={e=>{ setPassword(e.target.value); setAuthMessage(null); }} className="w-full border dark:border-gray-600 rounded p-2 text-sm bg-white dark:bg-gray-800 dark:text-white" type="password" />
                   </label>
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                     <button type="submit" className="bg-gridco-700 text-white px-4 py-2 rounded text-sm sm:text-base">Sign in</button>
                     <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm">
-                      <a className="text-gray-500" href="#" onClick={(ev) => { 
+                      <a className="text-gray-500 dark:text-gray-400 hover:underline" href="#" onClick={(ev) => { 
                         ev.preventDefault(); 
                         setForgotPasswordOpen(v => !v); 
                         setForgotPasswordMessage(null);
                         setSignupOpen(false);
                       }}>Forgot ID?</a>
-                      <a className="text-gridco-700 whitespace-nowrap" href="#" onClick={(ev) => { 
+                      <a className="text-gridco-700 dark:text-blue-400 whitespace-nowrap hover:underline" href="#" onClick={(ev) => { 
                         ev.preventDefault(); 
                         setSignupOpen(v => !v); 
                         setSignupMessage(null);
@@ -238,14 +238,14 @@ export default function Home(): JSX.Element {
                   <div className="mt-3 text-xs sm:text-sm text-red-600" role="alert">{authMessage}</div>
                 )}
                 {forgotPasswordOpen && (
-                  <div className="mt-3 p-3 border rounded bg-white">
-                    <div className="text-sm font-medium mb-2">Forgot Your Staff ID?</div>
-                    <p className="text-xs text-gray-600 mb-3">Enter your email address and we'll look up your Staff ID.</p>
-                    <label className="block text-xs sm:text-sm mb-1">Email Address</label>
+                  <div className="mt-3 p-3 border dark:border-gray-600 rounded bg-white dark:bg-gray-800">
+                    <div className="text-sm font-medium mb-2 dark:text-white">Forgot Your Staff ID?</div>
+                    <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">Enter your email address and we'll look up your Staff ID.</p>
+                    <label className="block text-xs sm:text-sm mb-1 dark:text-gray-300">Email Address</label>
                     <input 
                       value={forgotPasswordEmail} 
                       onChange={e=>setForgotPasswordEmail(e.target.value)} 
-                      className="w-full border rounded p-2 mb-3 text-sm" 
+                      className="w-full border dark:border-gray-600 rounded p-2 mb-3 text-sm bg-white dark:bg-gray-800 dark:text-white" 
                       type="email" 
                       placeholder="your.email@gridco.com"
                     />
@@ -296,17 +296,17 @@ export default function Home(): JSX.Element {
                   </div>
                 )}
                 {signupOpen && (
-                  <div className="mt-3 p-3 border rounded bg-white">
-                    <div className="text-sm font-medium mb-2">Set your password (first time)</div>
-                    <label className="block text-xs sm:text-sm mb-1">Staff ID</label>
-                    <input value={signupUsername} onChange={e=>setSignupUsername(e.target.value)} className="w-full border rounded p-2 mb-2 text-sm" type="text" />
-                    <label className="block text-xs sm:text-sm mb-1">Email</label>
+                  <div className="mt-3 p-3 border dark:border-gray-600 rounded bg-white dark:bg-gray-800">
+                    <div className="text-sm font-medium mb-2 dark:text-white">Set your password (first time)</div>
+                    <label className="block text-xs sm:text-sm mb-1 dark:text-gray-300">Staff ID</label>
+                    <input value={signupUsername} onChange={e=>setSignupUsername(e.target.value)} className="w-full border dark:border-gray-600 rounded p-2 mb-2 text-sm bg-white dark:bg-gray-800 dark:text-white" type="text" />
+                    <label className="block text-xs sm:text-sm mb-1 dark:text-gray-300">Email</label>
                     <input value={signupEmail} onChange=
-                    {e=>setSignupEmail(e.target.value)} className="w-full border rounded p-2 mb-2 text-sm" type="email" />
-                    <label className="block text-xs sm:text-sm mb-1">Password</label>
-                    <input value={signupPassword} onChange={e=>setSignupPassword(e.target.value)} className="w-full border rounded p-2 mb-2 text-sm" type="password" />
-                    <label className="block text-xs sm:text-sm mb-1">Confirm password</label>
-                    <input value={signupConfirm} onChange={e=>setSignupConfirm(e.target.value)} className="w-full border rounded p-2 mb-3 text-sm" type="password" />
+                    {e=>setSignupEmail(e.target.value)} className="w-full border dark:border-gray-600 rounded p-2 mb-2 text-sm bg-white dark:bg-gray-800 dark:text-white" type="email" />
+                    <label className="block text-xs sm:text-sm mb-1 dark:text-gray-300">Password</label>
+                    <input value={signupPassword} onChange={e=>setSignupPassword(e.target.value)} className="w-full border dark:border-gray-600 rounded p-2 mb-2 text-sm bg-white dark:bg-gray-800 dark:text-white" type="password" />
+                    <label className="block text-xs sm:text-sm mb-1 dark:text-gray-300">Confirm password</label>
+                    <input value={signupConfirm} onChange={e=>setSignupConfirm(e.target.value)} className="w-full border dark:border-gray-600 rounded p-2 mb-3 text-sm bg-white dark:bg-gray-800 dark:text-white" type="password" />
                     <div className="flex gap-2">
                       <button type="button" onClick={async () => {
                         setSignupMessage(null);
@@ -362,21 +362,21 @@ export default function Home(): JSX.Element {
                         } catch (e) {
                           setSignupMessage('Network error');
                         }
-                      }} className="px-3 py-2 bg-gridco-700 text-white rounded text-sm">Set password</button>
-                      <button onClick={() => setSignupOpen(false)} className="px-3 py-2 bg-gray-200 rounded text-sm">Cancel</button>
+                      }} className="px-3 py-2 bg-gridco-700 hover:bg-gridco-600 text-white rounded text-sm">Set password</button>
+                      <button onClick={() => setSignupOpen(false)} className="px-3 py-2 bg-gray-200 dark:bg-gray-700 dark:text-white hover:bg-gray-300 dark:hover:bg-gray-600 rounded text-sm">Cancel</button>
                     </div>
-                    {signupMessage && <div className="mt-2 text-xs sm:text-sm text-blue-600">{signupMessage}</div>}
+                    {signupMessage && <div className="mt-2 text-xs sm:text-sm text-blue-600 dark:text-blue-400">{signupMessage}</div>}
                   </div>
                 )}
-                <div className="text-xs text-gray-400 mt-3">Sign in with your Staff ID and password (accounts managed by admin).</div>
+                <div className="text-xs text-gray-400 dark:text-gray-500 mt-3">Sign in with your Staff ID and password (accounts managed by admin).</div>
               </div>
             ) : (
               <div>
-                <h3 className="text-base sm:text-lg font-medium">Signed in as</h3>
+                <h3 className="text-base sm:text-lg font-medium dark:text-white">Signed in as</h3>
                 <div className="mt-3 flex items-center justify-between">
                   <div>
-                    <div className="font-semibold text-sm sm:text-base">{user}</div>
-                    <div className="text-xs sm:text-sm text-gray-500">Operations staff</div>
+                    <div className="font-semibold text-sm sm:text-base dark:text-white">{user}</div>
+                    <div className="text-xs sm:text-sm text-gray-500 dark:text-gray-400">Operations staff</div>
                   </div>
                   <div>
                     <button onClick={signOut} className="bg-gray-200 px-3 py-2 rounded text-xs sm:text-sm">Sign out</button>

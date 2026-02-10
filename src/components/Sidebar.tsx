@@ -16,7 +16,7 @@ function NavItem({ to, label, onClick }: { to: string; label: string; onClick?: 
   );
 }
 
-export default function Sidebar(): JSX.Element {
+export default function Sidebar({ darkMode, toggleDarkMode }: { darkMode: boolean; toggleDarkMode: () => void }): JSX.Element {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -29,9 +29,8 @@ export default function Sidebar(): JSX.Element {
   }, [open]);
 
   return (
-    <>
-      {/* Mobile top bar */}
-      <div className="md:hidden bg-white border-b fixed top-0 left-0 right-0 z-30">
+    <>      {/* Mobile top bar */}
+      <div className="md:hidden bg-white dark:bg-gray-800 border-b dark:border-gray-700 fixed top-0 left-0 right-0 z-30">
         <div className="flex items-center justify-between px-4 py-3">
             <div className="flex items-center gap-3">
             <img
@@ -44,14 +43,14 @@ export default function Sidebar(): JSX.Element {
               }}
             />
           </div>
-          <button onClick={() => setOpen(v => !v)} aria-label="Toggle menu" className="p-2 rounded hover:bg-gray-100">
+          <button onClick={() => setOpen(v => !v)} aria-label="Toggle menu" className="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M4 6h16M4 12h16M4 18h16" stroke="#0b2545" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" className="text-gridco-800 dark:text-gray-200" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
         </div>
         {open && (
-          <nav className="fixed inset-x-0 top-14 bottom-0 bg-gridco-800 text-white shadow-lg z-40 overflow-auto">
+          <nav className="fixed inset-x-0 top-14 bottom-0 bg-gridco-800 dark:bg-gray-900 text-white shadow-lg z-40 overflow-auto">
             <div className="flex items-center justify-end p-3">
               <button onClick={() => setOpen(false)} aria-label="Close menu" className="p-2 rounded hover:bg-gridco-700/80">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -73,7 +72,7 @@ export default function Sidebar(): JSX.Element {
       </div>
 
       {/* Desktop sidebar */}
-      <aside className="hidden md:block w-64 bg-gridco-800 text-white min-h-screen p-6">
+      <aside className="hidden md:block w-64 bg-gridco-800 dark:bg-gray-900 text-white min-h-screen p-6">
         <div className="mb-6 flex items-center gap-3">
            <img
              src="/gridco-logo.png"

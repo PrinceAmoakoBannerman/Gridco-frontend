@@ -68,56 +68,56 @@ export default function FieldActivityLog(): JSX.Element {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-semibold">Field Activity / Substation Log</h1>
+      <h1 className="text-2xl font-semibold text-gray-900 dark:text-white">Field Activity / Substation Log</h1>
       <form className="mt-4 grid grid-cols-1 gap-4 max-w-2xl" onSubmit={handleSubmit}>
         <label className="flex flex-col">
-          <span className="text-sm font-medium">Staff</span>
-          <input className="border rounded p-2" value={form.staff} onChange={e => update('staff', e.target.value)} />
+          <span className="text-sm font-medium dark:text-gray-300">Staff</span>
+          <input className="border dark:border-gray-600 rounded p-2 bg-white dark:bg-gray-700 dark:text-white" value={form.staff} onChange={e => update('staff', e.target.value)} />
         </label>
 
         <label className="flex flex-col">
-          <span className="text-sm font-medium">Substation name</span>
-          <input className="border rounded p-2" value={form.substation} onChange={e => update('substation', e.target.value)} />
+          <span className="text-sm font-medium dark:text-gray-300">Substation name</span>
+          <input className="border dark:border-gray-600 rounded p-2 bg-white dark:bg-gray-700 dark:text-white" value={form.substation} onChange={e => update('substation', e.target.value)} />
         </label>
 
         <label className="flex flex-col">
-          <span className="text-sm font-medium">Date</span>
-          <input type="date" className="border rounded p-2" value={form.date} onChange={e => update('date', e.target.value)} />
+          <span className="text-sm font-medium dark:text-gray-300">Date</span>
+          <input type="date" className="border dark:border-gray-600 rounded p-2 bg-white dark:bg-gray-700 dark:text-white" value={form.date} onChange={e => update('date', e.target.value)} />
         </label>
 
         <div className="grid grid-cols-2 gap-4">
           <label className="flex flex-col">
-            <span className="text-sm font-medium">Time out (from office)</span>
-            <input type="time" className="border rounded p-2" value={form.timeOut} onChange={e => update('timeOut', e.target.value)} />
+            <span className="text-sm font-medium dark:text-gray-300">Time out (from office)</span>
+            <input type="time" className="border dark:border-gray-600 rounded p-2 bg-white dark:bg-gray-700 dark:text-white" value={form.timeOut} onChange={e => update('timeOut', e.target.value)} />
           </label>
           <label className="flex flex-col">
-            <span className="text-sm font-medium">Time returned</span>
-            <input type="time" className="border rounded p-2" value={form.timeReturned} onChange={e => update('timeReturned', e.target.value)} />
+            <span className="text-sm font-medium dark:text-gray-300">Time returned</span>
+            <input type="time" className="border dark:border-gray-600 rounded p-2 bg-white dark:bg-gray-700 dark:text-white" value={form.timeReturned} onChange={e => update('timeReturned', e.target.value)} />
           </label>
         </div>
 
         <label className="flex flex-col">
-          <span className="text-sm font-medium">Purpose of visit</span>
-          <textarea className="border rounded p-2" value={form.purpose} onChange={e => update('purpose', e.target.value)} />
+          <span className="text-sm font-medium dark:text-gray-300">Purpose of visit</span>
+          <textarea className="border dark:border-gray-600 rounded p-2 bg-white dark:bg-gray-700 dark:text-white" value={form.purpose} onChange={e => update('purpose', e.target.value)} />
         </label>
 
         <label className="flex flex-col">
-          <span className="text-sm font-medium">Work done</span>
-          <textarea className="border rounded p-2" value={form.workDone} onChange={e => update('workDone', e.target.value)} />
+          <span className="text-sm font-medium dark:text-gray-300">Work done</span>
+          <textarea className="border dark:border-gray-600 rounded p-2 bg-white dark:bg-gray-700 dark:text-white" value={form.workDone} onChange={e => update('workDone', e.target.value)} />
         </label>
 
         <label className="flex flex-col">
-          <span className="text-sm font-medium">Materials used</span>
-          <textarea className="border rounded p-2" value={form.materialsUsed} onChange={e => update('materialsUsed', e.target.value)} />
+          <span className="text-sm font-medium dark:text-gray-300">Materials used</span>
+          <textarea className="border dark:border-gray-600 rounded p-2 bg-white dark:bg-gray-700 dark:text-white" value={form.materialsUsed} onChange={e => update('materialsUsed', e.target.value)} />
         </label>
 
         <label className="flex flex-col">
-          <span className="text-sm font-medium">Supervisor approval</span>
-          <input className="border rounded p-2" value={form.supervisorApproval} onChange={e => update('supervisorApproval', e.target.value)} />
+          <span className="text-sm font-medium dark:text-gray-300">Supervisor approval</span>
+          <input className="border dark:border-gray-600 rounded p-2 bg-white dark:bg-gray-700 dark:text-white" value={form.supervisorApproval} onChange={e => update('supervisorApproval', e.target.value)} />
         </label>
 
         <div>
-          <button type="submit" className="bg-gridco-700 text-white px-4 py-2 rounded">Submit</button>
+          <button type="submit" className="bg-gridco-700 hover:bg-gridco-600 text-white px-4 py-2 rounded">Submit</button>
         </div>
       </form>
     </div>
