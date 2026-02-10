@@ -25,6 +25,9 @@ export default function Home(): JSX.Element {
   const [signupPassword, setSignupPassword] = useState('');
   const [signupConfirm, setSignupConfirm] = useState('');
   const [signupMessage, setSignupMessage] = useState<string | null>(null);
+  const [forgotPasswordOpen, setForgotPasswordOpen] = useState(false);
+  const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
+  const [forgotPasswordMessage, setForgotPasswordMessage] = useState<string | null>(null);
   
   
 
@@ -214,29 +217,18 @@ export default function Home(): JSX.Element {
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                     <button type="submit" className="bg-gridco-700 text-white px-4 py-2 rounded text-sm sm:text-base">Sign in</button>
                     <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm">
-                      <a className="text-gray-500" href="#" onClick={async (ev) => {
-                        ev.preventDefault();
-                        const supplied = prompt('Enter your email to recover Staff ID');
-                        if (!supplied) return;
-                        try {
-                          const res = await fetch(`${API_BASE_URL}/auth/lookup/`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ email: supplied }),
-                          });
-                          if (!res.ok) {
-                            const txt = await res.text();
-                            setAuthMessage('Lookup failed: ' + txt);
-                            return;
-                          }
-                          const j = await res.json();
-                          if (j.username) setAuthMessage('Your Staff ID is: ' + j.username);
-                          else setAuthMessage('No account found for that email.');
-                        } catch (e) {
-                          setAuthMessage('Lookup error');
-                        }
-                      }}>Forgot?</a>
-                      <a className="text-gridco-700 whitespace-nowrap" href="#" onClick={(ev) => { ev.preventDefault(); setSignupOpen(v => !v); setSignupMessage(null); }}>
+                      <a className="text-gray-500" href="#" onClick={(ev) => { 
+                        ev.preventDefault(); 
+                        setForgotPasswordOpen(v => !v); 
+                        setForgotPasswordMessage(null);
+                        setSignupOpen(false);
+                      }}>Forgot ID?</a>
+                      <a className="text-gridco-700 whitespace-nowrap" href="#" onClick={(ev) => { 
+                        ev.preventDefault(); 
+                        setSignupOpen(v => !v); 
+                        setSignupMessage(null);
+                        setForgotPasswordOpen(false);
+                      }}>
                         Set password
                       </a>
                     </div>
@@ -244,6 +236,64 @@ export default function Home(): JSX.Element {
                 </form>
                 {authMessage && (
                   <div className="mt-3 text-xs sm:text-sm text-red-600" role="alert">{authMessage}</div>
+                )}
+                {forgotPasswordOpen && (
+                  <div className="mt-3 p-3 border rounded bg-white">
+                    <div className="text-sm font-medium mb-2">Forgot Your Staff ID?</div>
+                    <p className="text-xs text-gray-600 mb-3">Enter your email address and we'll look up your Staff ID.</p>
+                    <label className="block text-xs sm:text-sm mb-1">Email Address</label>
+                    <input 
+                      value={forgotPasswordEmail} 
+                      onChange={e=>setForgotPasswordEmail(e.target.value)} 
+                      className="w-full border rounded p-2 mb-3 text-sm" 
+                      type="email" 
+                      placeholder="your.email@gridco.com"
+                    />
+                    <div className="flex gap-2">
+                      <button type="button" onClick={async () => {
+                        setForgotPasswordMessage(null);
+                        const mail = forgotPasswordEmail.trim();
+                        if (!mail) { 
+                          setForgotPasswordMessage('Please enter your email address'); 
+                          return; 
+                        }
+                        try {
+                          const res = await fetch(`${API_BASE_URL}/auth/lookup/`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ email: mail }),
+                          });
+                          if (!res.ok) {
+                            setForgotPasswordMessage('We couldn\'t find an account with that email address. Please check your email and try again, or contact your administrator for assistance.');
+                            return;
+                          }
+                          const j = await res.json();
+                          if (j.username) {
+                            setForgotPasswordMessage('✓ Your Staff ID is: ' + j.username);
+                            setEmail(j.username);
+                          } else {
+                            setForgotPasswordMessage('We couldn\'t find an account with that email address. Please verify your email or contact your administrator.');
+                          }
+                        } catch (e) {
+                          setForgotPasswordMessage('Error connecting to server. Please try again.');
+                        }
+                      }} className="bg-gridco-800 text-white px-4 py-2 rounded text-sm hover:bg-gridco-700">
+                        Look Up Staff ID
+                      </button>
+                      <button type="button" onClick={() => {
+                        setForgotPasswordOpen(false);
+                        setForgotPasswordMessage(null);
+                        setForgotPasswordEmail('');
+                      }} className="bg-gray-300 text-gray-700 px-4 py-2 rounded text-sm hover:bg-gray-400">
+                        Cancel
+                      </button>
+                    </div>
+                    {forgotPasswordMessage && (
+                      <div className={`mt-3 text-xs sm:text-sm ${
+                        forgotPasswordMessage.startsWith('✓') ? 'text-green-600' : 'text-red-600'
+                      }`} role="alert">{forgotPasswordMessage}</div>
+                    )}
+                  </div>
                 )}
                 {signupOpen && (
                   <div className="mt-3 p-3 border rounded bg-white">
