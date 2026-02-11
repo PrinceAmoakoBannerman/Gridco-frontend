@@ -40,7 +40,7 @@ function App() {
             </div>
           </header>
 
-          <main className="max-w-7xl mx-auto p-6">
+          <main className="px-4 py-6 md:max-w-7xl md:mx-auto">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/server-room" element={<ServerRoomRecord />} />
