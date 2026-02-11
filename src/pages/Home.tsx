@@ -57,7 +57,7 @@ export default function Home(): JSX.Element {
 
   function signIn(e: React.FormEvent) {
     e.preventDefault();
-    // Real authentication using JWT token endpoint
+
     if (!email || !password) {
       setAuthMessage('Enter Staff ID and password');
       return;

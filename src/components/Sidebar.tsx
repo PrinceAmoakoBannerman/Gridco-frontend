@@ -16,7 +16,7 @@ function NavItem({ to, label, onClick }: { to: string; label: string; onClick?: 
   );
 }
 
-export default function Sidebar({ darkMode, toggleDarkMode }: { darkMode: boolean; toggleDarkMode: () => void }): JSX.Element {
+export default function Sidebar(): JSX.Element {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -33,16 +33,18 @@ export default function Sidebar({ darkMode, toggleDarkMode }: { darkMode: boolea
       <div className="md:hidden bg-white dark:bg-gray-800 border-b dark:border-gray-700 fixed top-0 left-0 right-0 z-30">
         <div className="flex items-center justify-between px-4 py-3">
             <div className="flex items-center gap-3">
-            <img
-              src="/gridco-logo.png"
-              alt="GridCo"
-              className="h-8 w-auto"
-              onError={(e) => {
-                const img = e.currentTarget as HTMLImageElement;
-                if (img.src.endsWith('/gridco-logo.png')) img.src = (fallbackLogo as unknown as string) || '';
-              }}
-            />
-          </div>
+              <Link to="/" aria-label="Go to home" className="inline-flex">
+                <img
+                  src="/gridco-logo.png"
+                  alt="GridCo"
+                  className="h-8 w-auto"
+                  onError={(e) => {
+                    const img = e.currentTarget as HTMLImageElement;
+                    if (img.src.endsWith('/gridco-logo.png')) img.src = (fallbackLogo as unknown as string) || '';
+                  }}
+                />
+              </Link>
+            </div>
           <button onClick={() => setOpen(v => !v)} aria-label="Toggle menu" className="p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-700">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" className="text-gridco-800 dark:text-gray-200" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
@@ -74,15 +76,17 @@ export default function Sidebar({ darkMode, toggleDarkMode }: { darkMode: boolea
       {/* Desktop sidebar */}
       <aside className="hidden md:block w-64 bg-gridco-800 dark:bg-gray-900 text-white min-h-screen p-6">
         <div className="mb-6 flex items-center gap-3">
-           <img
-             src="/gridco-logo.png"
-             alt="GridCo"
-             className="h-10 w-auto"
-             onError={(e) => {
-               const img = e.currentTarget as HTMLImageElement;
-               if (img.src.endsWith('/gridco-logo.png')) img.src = (fallbackLogo as unknown as string) || '';
-             }}
-           />
+          <Link to="/" aria-label="Go to home" className="inline-flex">
+            <img
+              src="/gridco-logo.png"
+              alt="GridCo"
+              className="h-10 w-auto"
+              onError={(e) => {
+                const img = e.currentTarget as HTMLImageElement;
+                if (img.src.endsWith('/gridco-logo.png')) img.src = (fallbackLogo as unknown as string) || '';
+              }}
+            />
+          </Link>
         </div>
 
         <nav className="space-y-2 mt-4">
